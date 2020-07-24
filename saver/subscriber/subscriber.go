@@ -1,6 +1,7 @@
 package subscriber
 
 import (
+	"fmt"
 	"log"
 	"saver/config"
 	"saver/model"
@@ -10,23 +11,25 @@ import (
 )
 
 type Subscriber struct {
-	nc   *nats.Conn
-	natsCfg  config.Nats
-	r status.RedisStatus
-	redisCfg config.Redis
+	Nats     *nats.Conn
+	NatsCfg  config.Nats
+	Redis    status.RedisStatus
+	RedisCfg config.Redis
+	Status   status.SQLStatus
 }
 
-func New(nc *nats.Conn, natsCfg config.Nats, r status.RedisStatus, redisCfg config.Redis) Subscriber {
+func New(nc *nats.Conn, natsCfg config.Nats, r status.RedisStatus, redisCfg config.Redis, s status.SQLStatus) Subscriber {
 	return Subscriber{
-		nc:       nc,
-		natsCfg:  natsCfg,
-		r:        r,
-		redisCfg: redisCfg,
+		Nats:     nc,
+		NatsCfg:  natsCfg,
+		Redis:    r,
+		RedisCfg: redisCfg,
+		Status:   s,
 	}
 }
 
 func (s *Subscriber) Subscribe() {
-	c, err := nats.NewEncodedConn(s.nc, nats.GOB_ENCODER)
+	c, err := nats.NewEncodedConn(s.Nats, nats.GOB_ENCODER)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -35,22 +38,31 @@ func (s *Subscriber) Subscribe() {
 
 	ch := make(chan model.Status)
 
-	if _, err := c.QueueSubscribe(s.natsCfg.Topic, s.natsCfg.Queue, func(s model.Status) {
+	if _, err := c.QueueSubscribe(s.NatsCfg.Topic, s.NatsCfg.Queue, func(s model.Status) {
 		ch <- s
 	}); err != nil {
 		log.Fatal(err)
 	}
 
-	worker(ch, s.r)
+	s.worker(ch)
 }
 
-func worker(ch chan model.Status, r status.RedisStatus) {
+func (s *Subscriber) worker(ch chan model.Status) {
 	counter := 0
 
-	for s := range ch {
-		r.Insert(s)
+	for st := range ch {
+		s.Redis.Insert(st)
 		counter++
 
-		if counter ==
+		if counter == s.RedisCfg.Threshold {
+			statuses := s.Redis.Flush()
+			for i := 0; i < len(statuses); i++ {
+				if err := s.Status.Insert(statuses[i]); err != nil {
+					fmt.Println(err)
+				}
+			}
+
+			counter = 0
+		}
 	}
 }
