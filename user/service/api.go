@@ -7,6 +7,7 @@ import (
 	"user/authentication"
 	"user/config"
 	"user/model"
+	"user/request"
 	"user/store"
 
 	"github.com/labstack/echo"
