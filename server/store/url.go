@@ -1,5 +1,11 @@
 package store
 
+import (
+	"server/model"
+
+	"gorm.io/gorm"
+)
+
 type URL interface {
 	Insert(url model.URL) error
 	GetTable() ([]model.URL, error)

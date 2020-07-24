@@ -2,12 +2,17 @@ package server
 
 import (
 	"log"
+	"server/store"
 	"time"
+
+	"github.com/nats-io/go-nats"
 )
 
 type Server struct {
-	Status    status.SQLStatus
+	URL       store.SQLURL
 	Duration  int
+	NatsConn  *nats.Conn
+	NatsCfg   config.Nats
 }
 
 func (s *Server) Run() {
@@ -17,25 +22,13 @@ func (s *Server) Run() {
 	for {
 		<-ticker.C
 
-		counter++
-		if counter == s.Threshold {
-			statuses := s.Redis.Flush()
-			for i := 0; i < len(statuses); i++ {
-				if err := s.Status.Insert(statuses[i]); err != nil {
-					fmt.Println(err)
-				}
-			}
-
-			counter = 1
-		}
-
 		urls, err := s.URL.GetTable()
 		if err != nil {
 			log.Fatal(err)
 		}
 
 		for _, u := range urls {
-			if counter%u.Period != 0 {
+			if counter % u.Period != 0 {
 				continue
 			}
 
