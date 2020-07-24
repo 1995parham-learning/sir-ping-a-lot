@@ -1,15 +1,18 @@
 package service
 
 import (
-	"HTTP_monitoring/authentication"
+	"errors"
 	"net/http"
 	"net/url"
+	"user/authentication"
 	"user/config"
 	"user/model"
 	"user/store"
 
 	"github.com/labstack/echo"
 )
+
+var ErrLoggedOut = errors.New("you are not logged in")
 
 type API struct {
 	User   store.User
