@@ -1,8 +1,8 @@
 package migrate
 
 import (
-	"HTTP_monitoring/store/status"
 	"saver/store"
+	"saver/store/status"
 
 	"github.com/spf13/cobra"
 	"gorm.io/gorm"
