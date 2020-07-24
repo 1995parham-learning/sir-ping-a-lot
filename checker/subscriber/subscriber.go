@@ -11,44 +11,42 @@ import (
 	"github.com/nats-io/go-nats"
 )
 
-type Subscriber struct {
+type Checker struct {
 	Nats     *nats.Conn
 	NatsCfg  config.Nats
 }
 
-func New(nc *nats.Conn, natsCfg config.Nats) Subscriber {
-	return Subscriber{
+func New(nc *nats.Conn, natsCfg config.Nats) Checker {
+	return Checker{
 		Nats:     nc,
 		NatsCfg:  natsCfg,
 	}
 }
 
-func (s *Subscriber) Subscribe() {
-	c, err := nats.NewEncodedConn(s.Nats, nats.GOB_ENCODER)
+func (c *Checker) Subscribe() {
+	ec, err := nats.NewEncodedConn(c.Nats, nats.GOB_ENCODER)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	defer c.Close()
+	defer ec.Close()
 
 	ch := make(chan model.URL)
 
-	if _, err := c.QueueSubscribe(s.NatsCfg.Topic, s.NatsCfg.Queue, func(s model.URL) {
+	if _, err := ec.QueueSubscribe(c.NatsCfg.Topic, c.NatsCfg.Queue, func(s model.URL) {
 		ch <- s
 	}); err != nil {
 		log.Fatal(err)
 	}
 
 	for i := 0; i < 3; i++ {
-		go s.worker(ch)
+		go c.worker(ch)
 	}
 
 	select {}
 }
 
-func (s *Subscriber) worker(ch chan model.URL) {
-	counter := 0
-
+func (c *Checker) worker(ch chan model.URL) {
 	for u := range ch {
 		resp, err := http.Get(u.URL)
 		if err != nil {
@@ -60,6 +58,18 @@ func (s *Subscriber) worker(ch chan model.URL) {
 		st.Clock = time.Now()
 		st.StatusCode = resp.StatusCode
 
-		r.Insert(st)
+		c.Publish(u)
+	}
+}
+
+func (c *Checker) Publish(u model.URL) {
+	ec, err := nats.NewEncodedConn(c.Nats, nats.GOB_ENCODER)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = ec.Publish(c.NatsCfg.Topic, u)
+	if err != nil {
+		log.Fatal(err)
 	}
 }
