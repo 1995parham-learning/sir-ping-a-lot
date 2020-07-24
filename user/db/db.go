@@ -4,8 +4,8 @@ import (
 	"log"
 	"user/config"
 
-	"github.com/jinzhu/gorm"
 	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 func New(config config.Database) *gorm.DB {
