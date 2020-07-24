@@ -14,6 +14,6 @@ redis:
   threshold: 4
 nats:
   host: nats://localhost:4221
-  topic: monitor
-  queue: monitors
+  topic: save
+  queue: saver
 `

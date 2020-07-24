@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"HTTP_monitoring/memory"
 	"fmt"
 	"os"
 	"saver/balancer"
@@ -8,6 +9,7 @@ import (
 	"saver/cmd/server"
 	"saver/config"
 	"saver/db"
+	"saver/store/status"
 
 	"github.com/spf13/cobra"
 )
@@ -26,10 +28,11 @@ func Execute() {
 
 	cfg := config.Read()
 	d := db.New(cfg.Database)
+	r := memory.New(cfg.Redis)
 	n := balancer.New(cfg.Nats)
 
 	migrate.Register(rootCmd, d)
-	server.Register(rootCmd, n, cfg.Nats)
+	server.Register(rootCmd, n, cfg.Nats, status.NewRedisStatus(r))
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
