@@ -2,9 +2,9 @@ package service
 
 import (
 	"HTTP_monitoring/authentication"
-	"HTTP_monitoring/config"
 	"net/http"
 	"net/url"
+	"user/config"
 	"user/model"
 	"user/store"
 
