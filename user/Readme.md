@@ -10,3 +10,10 @@ This repository is only responsible for creating and running the endpoints Regis
 
 ## Saver repository
 In the begging saver should make the tables in the database
+
+## Server repository
+This repository get the url table periodically and publishes each URL which should be checked to the nats.
+
+## Checker repository
+This repository gets the URLs which should be checked from nats, checks their status and publishes the status to nats<br/>
+again, we have more than one instance if this project running
