@@ -1,5 +1,12 @@
 package store
 
+import (
+	"log"
+	"saver/model"
+
+	"gorm.io/gorm"
+)
+
 type User interface {
 	Insert(user model.User) error
 	Retrieve(user model.User) (model.User, error)
