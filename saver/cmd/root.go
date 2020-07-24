@@ -1,11 +1,11 @@
 package cmd
 
 import (
-	"HTTP_monitoring/balancer"
-	"HTTP_monitoring/memory"
 	"fmt"
 	"os"
+	"saver/balancer"
 	"saver/cmd/migrate"
+	"saver/cmd/server"
 	"saver/config"
 	"saver/db"
 
@@ -26,8 +26,10 @@ func Execute() {
 
 	cfg := config.Read()
 	d := db.New(cfg.Database)
+	n := balancer.New(cfg.Nats)
 
 	migrate.Register(rootCmd, d)
+	server.Register(rootCmd, n, cfg.Nats)
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
