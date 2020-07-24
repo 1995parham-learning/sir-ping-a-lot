@@ -2,8 +2,11 @@ package subscriber
 
 import (
 	"checker/config"
+	"checker/model"
+	"fmt"
 	"log"
-	"user/model"
+	"net/http"
+	"time"
 
 	"github.com/nats-io/go-nats"
 )
@@ -30,31 +33,33 @@ func (s *Subscriber) Subscribe() {
 
 	ch := make(chan model.URL)
 
-	if _, err := c.QueueSubscribe(s.NatsCfg.Topic, s.NatsCfg.Queue, func(s model.Status) {
+	if _, err := c.QueueSubscribe(s.NatsCfg.Topic, s.NatsCfg.Queue, func(s model.URL) {
 		ch <- s
 	}); err != nil {
 		log.Fatal(err)
 	}
 
-	s.worker(ch)
+	for i := 0; i < 3; i++ {
+		go s.worker(ch)
+	}
+
+	select {}
 }
 
-func (s *Subscriber) worker(ch chan model.Status) {
+func (s *Subscriber) worker(ch chan model.URL) {
 	counter := 0
 
-	for st := range ch {
-		s.Redis.Insert(st)
-		counter++
-
-		if counter == s.RedisCfg.Threshold {
-			statuses := s.Redis.Flush()
-			for i := 0; i < len(statuses); i++ {
-				if err := s.Status.Insert(statuses[i]); err != nil {
-					fmt.Println(err)
-				}
-			}
-
-			counter = 0
+	for u := range ch {
+		resp, err := http.Get(u.URL)
+		if err != nil {
+			fmt.Println(err)
 		}
+
+		var st model.Status
+		st.URLID = u.ID
+		st.Clock = time.Now()
+		st.StatusCode = resp.StatusCode
+
+		r.Insert(st)
 	}
 }
