@@ -10,6 +10,6 @@ db:
   sslmode: disable
 nats:
   host: nats://localhost:4221
-  topic: monitor
+  topic: check
   queue: monitors
 `

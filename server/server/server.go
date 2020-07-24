@@ -2,6 +2,8 @@ package server
 
 import (
 	"log"
+	"server/config"
+	"server/model"
 	"server/store"
 	"time"
 
@@ -34,5 +36,17 @@ func (s *Server) Run() {
 
 			s.Publish(u)
 		}
+	}
+}
+
+func (s *Server) Publish(u model.URL) {
+	ec, err := nats.NewEncodedConn(s.NatsConn, nats.GOB_ENCODER)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = ec.Publish(s.NatsCfg.Topic, u)
+	if err != nil {
+		log.Fatal(err)
 	}
 }
