@@ -55,24 +55,26 @@ func (c *Checker) worker(ch chan model.URL) {
 			fmt.Println(err)
 		}
 
-		ctx, _ := context.WithTimeout(req.Context(), time.Second)
+		ctx, cancel := context.WithTimeout(req.Context(), time.Second)
 
 		req = req.WithContext(ctx)
 		client := http.DefaultClient
+
 		resp, err := client.Do(req)
 		if err != nil {
 			fmt.Println(err)
 		}
 
+		cancel()
+
 		var st model.Status
 		st.URLID = u.ID
 		st.Clock = time.Now()
-		if err != nil{
+		if err != nil {
 			st.StatusCode = http.StatusRequestTimeout
-		}else {
+		} else {
 			st.StatusCode = resp.StatusCode
 		}
-
 
 		fmt.Println("In the checker the url is")
 		fmt.Println(u.URL)
