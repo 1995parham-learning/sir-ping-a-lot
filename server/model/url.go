@@ -1,9 +1,9 @@
 package model
 
 type URL struct {
-	ID       int `gorm:"primaryKey;AUTO_INCREMENT"`
+	ID       int
 	UserID   int
-	URL      string   `gorm:"not null"`
-	Period   int      `gorm:"default:1"`
-	Statuses []Status `gorm:"foreignkey:URLID"`
+	URL      string
+	Period   int
+	Statuses []Status
 }

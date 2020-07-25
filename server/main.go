@@ -1,6 +1,7 @@
 package main
 
 import (
+	"server/balancer"
 	"server/config"
 	"server/db"
 	"server/server"
@@ -10,5 +11,7 @@ import (
 func main() {
 	cfg := config.Read()
 	d := db.New(cfg.Database)
-	s := server.New(store.NewURL(d),1, , cfg.Nats)
+	s := server.New(store.NewURL(d),1, balancer.New(cfg.Nats), cfg.Nats)
+
+	s.Run()
 }
