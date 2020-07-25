@@ -77,7 +77,7 @@ func fetch(u model.URL) (*http.Response, error) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	
+
 	client := http.DefaultClient
 
 	return client.Do(req)
