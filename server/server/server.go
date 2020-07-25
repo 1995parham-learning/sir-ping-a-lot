@@ -12,10 +12,10 @@ import (
 )
 
 type Server struct {
-	URL       store.SQLURL
-	Duration  int
-	NatsConn  *nats.Conn
-	NatsCfg   config.Nats
+	URL      store.SQLURL
+	Duration int
+	NatsConn *nats.Conn
+	NatsCfg  config.Nats
 }
 
 func New(u store.SQLURL, d int, conn *nats.Conn, cfg config.Nats) Server {
@@ -26,6 +26,7 @@ func New(u store.SQLURL, d int, conn *nats.Conn, cfg config.Nats) Server {
 		NatsCfg:  cfg,
 	}
 }
+
 func (s *Server) Run() {
 	ticker := time.NewTicker(time.Duration(s.Duration) * time.Minute)
 	counter := 0
@@ -39,7 +40,7 @@ func (s *Server) Run() {
 		}
 
 		for _, u := range urls {
-			if counter % u.Period != 0 {
+			if counter%u.Period != 0 {
 				continue
 			}
 
