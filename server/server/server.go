@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"log"
 	"server/config"
 	"server/model"
@@ -41,6 +42,9 @@ func (s *Server) Run() {
 			if counter % u.Period != 0 {
 				continue
 			}
+
+			fmt.Println("In the server and the url is")
+			fmt.Println(u)
 
 			s.Publish(u)
 		}
