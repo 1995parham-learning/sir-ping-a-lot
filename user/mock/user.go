@@ -5,7 +5,6 @@ import (
 	"user/model"
 )
 
-//nolint: gofumpt
 var (
 	ErrDuplicateEmail = errors.New("this email exists")
 	ErrWrongPass      = errors.New("password is not correct")
