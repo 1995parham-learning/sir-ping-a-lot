@@ -51,10 +51,11 @@ func (c *Checker) Subscribe() {
 func (c *Checker) worker(ch chan model.URL) {
 	for u := range ch {
 		resp, err := fetch(u)
-		
+
 		var st model.Status
 		st.URLID = u.ID
 		st.Clock = time.Now()
+
 		if err != nil {
 			st.StatusCode = http.StatusRequestTimeout
 		} else {
@@ -69,15 +70,14 @@ func (c *Checker) worker(ch chan model.URL) {
 }
 
 func fetch(u model.URL) (*http.Response, error) {
-	req, err := http.NewRequest(http.MethodGet, u.URL, nil)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u.URL, nil)
 	if err != nil {
 		fmt.Println(err)
 	}
-
-	ctx, cancel := context.WithTimeout(req.Context(), time.Second)
-	defer cancel()
-
-	req = req.WithContext(ctx)
+	
 	client := http.DefaultClient
 
 	return client.Do(req)
