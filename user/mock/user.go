@@ -6,9 +6,11 @@ import (
 )
 
 //nolint: gofumpt
-var ErrDuplicateEmail = errors.New("this email exists")
-var ErrWrongPass = errors.New("password is not correct")
-var ErrNotFound = errors.New("this user doesn't exist in the database")
+var (
+	ErrDuplicateEmail = errors.New("this email exists")
+	ErrWrongPass      = errors.New("password is not correct")
+	ErrNotFound       = errors.New("this user doesn't exist in the database")
+)
 
 type User struct {
 	Info map[string]string

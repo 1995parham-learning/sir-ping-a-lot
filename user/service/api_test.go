@@ -1,4 +1,4 @@
-package service
+package service_test
 
 import (
 	"encoding/json"
@@ -11,6 +11,7 @@ import (
 	"testing"
 	"user/config"
 	"user/mock"
+	"user/service"
 
 	"github.com/labstack/echo"
 	"github.com/stretchr/testify/assert"
@@ -19,7 +20,7 @@ import (
 func TestRegisterEmailEmpty(t *testing.T) {
 	cfg := config.Read()
 
-	api := API{
+	api := service.API{
 		User:   mock.User{Info: map[string]string{}},
 		URL:    mock.URL{Urls: map[string]int{}},
 		Config: cfg.JWT,
@@ -47,7 +48,7 @@ func TestRegisterEmailEmpty(t *testing.T) {
 	fmt.Println(string(body))
 }
 
-func Register(t *testing.T, api API) {
+func Register(t *testing.T, api service.API) {
 	e := echo.New()
 	e.POST("/register", api.Register)
 
@@ -71,7 +72,7 @@ func Register(t *testing.T, api API) {
 	fmt.Println(string(body))
 }
 
-func Login(t *testing.T, api API) string {
+func Login(t *testing.T, api service.API) string {
 	e := echo.New()
 	e.POST("/login", api.Login)
 
@@ -104,7 +105,7 @@ func Login(t *testing.T, api API) string {
 	return token
 }
 
-func Add(t *testing.T, token string, api API) {
+func Add(t *testing.T, token string, api service.API) {
 	e := echo.New()
 	e.POST("/url", api.Add)
 
@@ -132,7 +133,7 @@ func Add(t *testing.T, token string, api API) {
 func TestAPI(t *testing.T) {
 	cfg := config.Read()
 
-	api := API{
+	api := service.API{
 		User:   mock.User{Info: map[string]string{}},
 		URL:    mock.URL{Urls: map[string]int{}},
 		Config: cfg.JWT,

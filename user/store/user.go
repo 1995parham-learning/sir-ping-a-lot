@@ -7,8 +7,10 @@ import (
 	"gorm.io/gorm"
 )
 
-var ErrNotFound = errors.New("this user doesn't exist in the database")
-var ErrWrongPass = errors.New("password is not correct")
+var (
+	ErrNotFound  = errors.New("this user doesn't exist in the database")
+	ErrWrongPass = errors.New("password is not correct")
+)
 
 type User interface {
 	Insert(user model.User) error
