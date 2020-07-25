@@ -1,0 +1,1 @@
+[![Build Status](https://cloud.drone.io/api/badges/HTTP-monitoring/saver/status.svg)](https://cloud.drone.io/HTTP-monitoring/saver)
