@@ -50,23 +50,8 @@ func (c *Checker) Subscribe() {
 //nolint: bodyclose
 func (c *Checker) worker(ch chan model.URL) {
 	for u := range ch {
-		req, err := http.NewRequest(http.MethodGet, u.URL, nil)
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		ctx, cancel := context.WithTimeout(req.Context(), time.Second)
-
-		req = req.WithContext(ctx)
-		client := http.DefaultClient
-
-		resp, err := client.Do(req)
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		cancel()
-
+		resp, err := fetch(u)
+		
 		var st model.Status
 		st.URLID = u.ID
 		st.Clock = time.Now()
@@ -81,6 +66,21 @@ func (c *Checker) worker(ch chan model.URL) {
 
 		c.Publish(st)
 	}
+}
+
+func fetch(u model.URL) (*http.Response, error) {
+	req, err := http.NewRequest(http.MethodGet, u.URL, nil)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	ctx, cancel := context.WithTimeout(req.Context(), time.Second)
+	defer cancel()
+
+	req = req.WithContext(ctx)
+	client := http.DefaultClient
+
+	return client.Do(req)
 }
 
 func (c *Checker) Publish(s model.Status) {
