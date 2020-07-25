@@ -1,2 +1,2 @@
-[![Build Status](https://cloud.drone.io/api/badges/HTTP-monitoring/checker/status.svg)](https://cloud.drone.io/HTTP-monitoring/checker)
+[![Build Status](https://cloud.drone.io/api/badges/HTTP-monitoring/checker/status.svg)](https://cloud.drone.io/HTTP-monitoring/checker)<br/>
 Check the [Readme](https://github.com/HTTP-monitoring/entryPoint) of entrypoint repository
