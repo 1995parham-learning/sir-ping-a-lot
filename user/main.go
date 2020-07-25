@@ -11,7 +11,7 @@ func main() {
 	cfg := config.Read()
 	d := db.New(cfg.Database)
 
-	api := service.API {
+	api := service.API{
 		User:   store.NewUser(d),
 		URL:    store.NewURL(d),
 		Config: cfg.JWT,
