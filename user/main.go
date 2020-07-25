@@ -16,4 +16,6 @@ func main() {
 		URL:    store.NewURL(d),
 		Config: cfg.JWT,
 	}
+
+	api.Run()
 }

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"user/model"
 
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 var ErrNotFound = errors.New("this user doesn't exist in the database")

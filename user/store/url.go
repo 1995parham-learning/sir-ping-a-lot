@@ -8,7 +8,6 @@ import (
 
 type URL interface {
 	Insert(url model.URL) error
-	GetTable() ([]model.URL, error)
 }
 
 type SQLURL struct {
