@@ -12,14 +12,14 @@ import (
 )
 
 type Checker struct {
-	Nats     *nats.Conn
-	NatsCfg  config.Nats
+	Nats    *nats.Conn
+	NatsCfg config.Nats
 }
 
 func New(nc *nats.Conn, natsCfg config.Nats) Checker {
 	return Checker{
-		Nats:     nc,
-		NatsCfg:  natsCfg,
+		Nats:    nc,
+		NatsCfg: natsCfg,
 	}
 }
 
@@ -46,6 +46,7 @@ func (c *Checker) Subscribe() {
 	select {}
 }
 
+//nolint: bodyclose
 func (c *Checker) worker(ch chan model.URL) {
 	for u := range ch {
 		resp, err := http.Get(u.URL)

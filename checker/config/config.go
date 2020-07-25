@@ -9,7 +9,7 @@ import (
 )
 
 type Config struct {
-	Nats     Nats     `mapstructure:"nats"`
+	Nats Nats `mapstructure:"nats"`
 }
 
 type Nats struct {
