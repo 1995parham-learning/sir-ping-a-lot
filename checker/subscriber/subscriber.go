@@ -58,18 +58,24 @@ func (c *Checker) worker(ch chan model.URL) {
 		st.Clock = time.Now()
 		st.StatusCode = resp.StatusCode
 
-		c.Publish(u)
+		fmt.Println("In the checker the url is")
+		fmt.Println(u.URL)
+
+		c.Publish(st)
 	}
 }
 
-func (c *Checker) Publish(u model.URL) {
+func (c *Checker) Publish(s model.Status) {
 	ec, err := nats.NewEncodedConn(c.Nats, nats.GOB_ENCODER)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = ec.Publish(c.NatsCfg.Topic, u)
+	err = ec.Publish("save", s)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	fmt.Println("In the checker and publish")
+	fmt.Println(s)
 }
