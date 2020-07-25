@@ -5,5 +5,5 @@ type URL struct {
 	UserID   int
 	URL      string
 	Period   int
-	Statuses []Status `gorm:"foreignkey:URLID"`
+	Statuses []Status
 }
