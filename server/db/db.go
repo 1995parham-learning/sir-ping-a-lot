@@ -2,7 +2,7 @@ package db
 
 import (
 	"log"
-	"saver/config"
+	"server/config"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
