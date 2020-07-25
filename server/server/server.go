@@ -17,6 +17,14 @@ type Server struct {
 	NatsCfg   config.Nats
 }
 
+func New(u store.SQLURL, d int, conn *nats.Conn, cfg config.Nats) Server {
+	return Server{
+		URL:      u,
+		Duration: d,
+		NatsConn: conn,
+		NatsCfg:  cfg,
+	}
+}
 func (s *Server) Run() {
 	ticker := time.NewTicker(time.Duration(s.Duration) * time.Minute)
 	counter := 0
