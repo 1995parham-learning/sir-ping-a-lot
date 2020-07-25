@@ -3,6 +3,7 @@ package subscriber
 import (
 	"checker/config"
 	"checker/model"
+	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -49,7 +50,16 @@ func (c *Checker) Subscribe() {
 //nolint: bodyclose
 func (c *Checker) worker(ch chan model.URL) {
 	for u := range ch {
-		resp, err := http.Get(u.URL)
+		req, err := http.NewRequest(http.MethodGet, u.URL, nil)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		ctx, _ := context.WithTimeout(req.Context(), time.Second)
+
+		req = req.WithContext(ctx)
+		client := http.DefaultClient
+		resp, err := client.Do(req)
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -57,7 +67,12 @@ func (c *Checker) worker(ch chan model.URL) {
 		var st model.Status
 		st.URLID = u.ID
 		st.Clock = time.Now()
-		st.StatusCode = resp.StatusCode
+		if err != nil{
+			st.StatusCode = http.StatusRequestTimeout
+		}else {
+			st.StatusCode = resp.StatusCode
+		}
+
 
 		fmt.Println("In the checker the url is")
 		fmt.Println(u.URL)
