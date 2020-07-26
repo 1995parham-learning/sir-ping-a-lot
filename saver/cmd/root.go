@@ -18,7 +18,7 @@ import (
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	// rootCmd represents the base command when called without any subcommands
-	var rootCmd = &cobra.Command{
+	rootCmd := &cobra.Command{
 		Use:   "saver",
 		Short: "A brief description of your application",
 		// Uncomment the following line if your bare application
@@ -32,7 +32,7 @@ func Execute() {
 	n := balancer.New(cfg.Nats)
 
 	migrate.Register(rootCmd, d)
-	server.Register(rootCmd, n, cfg.Nats, status.NewRedisStatus(r), cfg.Redis,  status.NewSQLStatus(d))
+	server.Register(rootCmd, n, cfg.Nats, status.NewRedisStatus(r), cfg.Redis, status.NewSQLStatus(d))
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)

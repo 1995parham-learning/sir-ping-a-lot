@@ -9,7 +9,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func Register(root *cobra.Command, n *nats.Conn, natsCfg config.Nats, r status.RedisStatus, redisCfg config.Redis, s status.SQLStatus) {
+func Register(root *cobra.Command, n *nats.Conn, natsCfg config.Nats,
+	r status.RedisStatus, redisCfg config.Redis, s status.SQLStatus) {
 	c := cobra.Command{
 		Use:   "server",
 		Short: "Manages database, creates and fills tables if don't exist",

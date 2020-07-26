@@ -18,7 +18,8 @@ type Subscriber struct {
 	Status   status.SQLStatus
 }
 
-func New(nc *nats.Conn, natsCfg config.Nats, r status.RedisStatus, redisCfg config.Redis, s status.SQLStatus) Subscriber {
+func New(nc *nats.Conn, natsCfg config.Nats, r status.RedisStatus,
+	redisCfg config.Redis, s status.SQLStatus) Subscriber {
 	return Subscriber{
 		Nats:     nc,
 		NatsCfg:  natsCfg,
@@ -57,6 +58,7 @@ func (s *Subscriber) worker(ch chan model.Status) {
 		counter++
 
 		fmt.Println(counter)
+
 		if counter == s.RedisCfg.Threshold {
 			statuses := s.Redis.Flush()
 			for i := 0; i < len(statuses); i++ {
@@ -66,6 +68,7 @@ func (s *Subscriber) worker(ch chan model.Status) {
 			}
 
 			fmt.Println("flush")
+
 			counter = 0
 		}
 	}

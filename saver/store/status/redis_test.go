@@ -1,9 +1,10 @@
-package status
+package status_test
 
 import (
 	"saver/config"
 	"saver/memory"
 	"saver/model"
+	"saver/store/status"
 	"testing"
 	"time"
 
@@ -13,7 +14,7 @@ import (
 func TestRedisStatus(t *testing.T) {
 	cfg := config.Read()
 	r := memory.New(cfg.Redis)
-	redis := NewRedisStatus(r)
+	redis := status.NewRedisStatus(r)
 
 	f := model.Status{
 		ID:         1,
