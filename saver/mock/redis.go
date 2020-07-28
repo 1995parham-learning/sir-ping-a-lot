@@ -15,5 +15,5 @@ func (r *Redis) Insert(status model.Status) {
 }
 
 func (r *Redis) Flush() []model.Status {
-
+	return nil
 }

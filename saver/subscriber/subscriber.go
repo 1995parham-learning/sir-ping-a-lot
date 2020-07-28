@@ -15,11 +15,11 @@ type Subscriber struct {
 	NatsCfg  config.Nats
 	Redis    status.Memory
 	RedisCfg config.Redis
-	Status   status.SQLStatus
+	Status   status.Status
 }
 
 func New(nc *nats.Conn, natsCfg config.Nats, r status.Memory,
-	redisCfg config.Redis, s status.SQLStatus) Subscriber {
+	redisCfg config.Redis, s status.Status) Subscriber {
 	return Subscriber{
 		Nats:     nc,
 		NatsCfg:  natsCfg,
@@ -46,6 +46,21 @@ func (s *Subscriber) Subscribe() {
 	}
 
 	s.worker(ch)
+}
+
+func (s *Subscriber) Publish(st model.Status) {
+	ec, err := nats.NewEncodedConn(s.Nats, nats.GOB_ENCODER)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = ec.Publish(s.NatsCfg.Topic, st)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("In the checker and publish")
+	fmt.Println(st)
 }
 
 func (s *Subscriber) worker(ch chan model.Status) {
