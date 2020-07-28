@@ -9,6 +9,10 @@ import (
 	"github.com/gomodule/redigo/redis"
 )
 
+type Memory interface {
+	Insert(status model.Status)
+}
+
 type RedisStatus struct {
 	Redis   redis.Conn
 	Counter int
