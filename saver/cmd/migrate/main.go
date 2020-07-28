@@ -7,11 +7,11 @@ import (
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/spf13/cobra"
-	"gorm.io/gorm"
 )
 
-func Register(root *cobra.Command, d *gorm.DB, cfg config.Database) {
+func Register(root *cobra.Command, cfg config.Database) {
 	c := cobra.Command{
 		Use:   "migrate",
 		Short: "Manages database, creates and fills tables if don't exist",

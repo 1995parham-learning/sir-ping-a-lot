@@ -31,7 +31,7 @@ func Execute() {
 	r := memory.New(cfg.Redis)
 	n := balancer.New(cfg.Nats)
 
-	migrate.Register(rootCmd, d, cfg.Database)
+	migrate.Register(rootCmd, cfg.Database)
 	server.Register(rootCmd, n, cfg.Nats, status.NewRedisStatus(r), cfg.Redis, status.NewSQLStatus(d))
 
 	if err := rootCmd.Execute(); err != nil {
