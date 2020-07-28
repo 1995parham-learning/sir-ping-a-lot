@@ -22,9 +22,9 @@ func NewURL(d *gorm.DB) SQLURL {
 
 // Creates a table in the database that matches the URL table.
 func (u SQLURL) Create() {
-	if err := u.DB.Migrator().DropTable(&model.URL{}); err != nil {
-		log.Fatal(err)
-	}
+	//if err := u.DB.Migrator().DropTable(&model.URL{}); err != nil {
+	//	log.Fatal(err)
+	//}
 
 	if err := u.DB.Migrator().CreateTable(&model.URL{}); err != nil {
 		log.Fatal(err)

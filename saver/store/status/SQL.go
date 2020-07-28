@@ -22,9 +22,9 @@ func NewSQLStatus(d *gorm.DB) SQLStatus {
 // Creates a table in the database that matches the status table and puts a trigger on it which deletes the
 // rows that have expired after each insert.
 func (m SQLStatus) Create() {
-	if err := m.DB.Migrator().DropTable(&model.Status{}); err != nil {
-		log.Fatal(err)
-	}
+	//if err := m.DB.Migrator().DropTable(&model.Status{}); err != nil {
+	//	log.Fatal(err)
+	//}
 
 	if err := m.DB.Migrator().CreateTable(&model.Status{}); err != nil {
 		log.Fatal(err)

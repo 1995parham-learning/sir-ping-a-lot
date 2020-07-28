@@ -3,6 +3,7 @@ module saver
 go 1.13
 
 require (
+	github.com/golang-migrate/migrate/v4 v4.12.0
 	github.com/gomodule/redigo/redis v0.0.0-20200429221454-e14091dffc1b
 	github.com/magiconair/properties v1.8.1
 	github.com/nats-io/gnatsd v1.4.1 // indirect
