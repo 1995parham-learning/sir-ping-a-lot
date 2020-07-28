@@ -42,14 +42,7 @@ func (u SQLUser) Create(config config.Database) {
 		log.Fatal(err)
 	}
 
-	if err := p.Up(); err != nil {
-		log.Fatal(err)
-	}
-	//if err := u.DB.Migrator().DropTable(&model.User{}); err != nil {
-	//	log.Fatal(err)
-	//}
-
-	if err := u.DB.Migrator().CreateTable(&model.User{}); err != nil {
+	if err := p.Up(); err != nil && err != migrate.ErrNoChange {
 		log.Fatal(err)
 	}
 }
