@@ -11,6 +11,7 @@ import (
 
 type Memory interface {
 	Insert(status model.Status)
+	Flush() []model.Status
 }
 
 type RedisStatus struct {

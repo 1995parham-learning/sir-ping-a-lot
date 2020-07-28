@@ -13,12 +13,12 @@ import (
 type Subscriber struct {
 	Nats     *nats.Conn
 	NatsCfg  config.Nats
-	Redis    status.RedisStatus
+	Redis    status.Memory
 	RedisCfg config.Redis
 	Status   status.SQLStatus
 }
 
-func New(nc *nats.Conn, natsCfg config.Nats, r status.RedisStatus,
+func New(nc *nats.Conn, natsCfg config.Nats, r status.Memory,
 	redisCfg config.Redis, s status.SQLStatus) Subscriber {
 	return Subscriber{
 		Nats:     nc,
