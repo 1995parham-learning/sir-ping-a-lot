@@ -4,7 +4,8 @@ import (
 	"saver/balancer"
 	"saver/config"
 	"saver/db"
-	"saver/memory"
+	"saver/mock"
+	"saver/store/status"
 	"saver/subscriber"
 	"testing"
 )
@@ -12,8 +13,11 @@ import (
 func TestSubscriber_Subscribe(t *testing.T) {
 	cfg := config.Read()
 	d := db.New(cfg.Database)
-	r := memory.New(cfg.Redis)
 	n := balancer.New(cfg.Nats)
 
-	subscriber.New(n, cfg.Nats, )
+	r := mock.NewRedis()
+
+	s := subscriber.New(n, cfg.Nats, &r, cfg.Redis, status.NewSQLStatus(d))
+
+	s.Subscribe()
 }
