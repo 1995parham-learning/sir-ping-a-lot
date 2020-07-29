@@ -3,6 +3,8 @@ package mock
 import (
 	"errors"
 	"user/model"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 var (
@@ -30,16 +32,16 @@ func (u User) Retrieve(user model.User) (model.User, error) {
 	pass, ok := u.Info[user.Email]
 
 	if ok {
-		if user.Password == pass {
-			return model.User{
-				ID:       0,
-				Email:    user.Email,
-				Password: pass,
-				Urls:     nil,
-			}, nil
+		if err := bcrypt.CompareHashAndPassword([]byte(pass), []byte(user.Password)); err != nil {
+			return user, ErrWrongPass
 		}
 
-		return model.User{}, ErrWrongPass
+		return model.User{
+			ID:       0,
+			Email:    user.Email,
+			Password: pass,
+			Urls:     nil,
+		}, nil
 	}
 
 	return model.User{}, ErrNotFound
