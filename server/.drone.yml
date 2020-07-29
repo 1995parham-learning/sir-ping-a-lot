@@ -11,10 +11,10 @@ steps:
     image: golang
     commands:
       - go test -v ./... -covermode=count -coverprofile=coverage.out
-  - name: coveralls
-    image: lizheming/drone-coveralls
+  - name: coverage
+    image: plugins/codecov
     settings:
       token:
-        from_secret: coveralls_token
+        from_secret: codecov_token
       files:
-        - ./coverage.out
+        - coverage.out
