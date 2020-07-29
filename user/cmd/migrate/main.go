@@ -2,6 +2,7 @@ package migrate
 
 import (
 	"database/sql"
+	"errors"
 	"log"
 	"user/config"
 
@@ -30,7 +31,7 @@ func Register(root *cobra.Command, cfg config.Database) {
 				log.Fatal(err)
 			}
 
-			if err := p.Up(); err != nil && err != migrate.ErrNoChange {
+			if err := p.Up(); err != nil && errors.Is(err, migrate.ErrNoChange) {
 				log.Fatal(err)
 			}
 		},

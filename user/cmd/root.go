@@ -14,7 +14,7 @@ import (
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	// rootCmd represents the base command when called without any subcommands
-	var rootCmd = &cobra.Command{
+	rootCmd := &cobra.Command{
 		Use:   "user",
 		Short: "A brief description of your application",
 	}
@@ -29,4 +29,3 @@ func Execute() {
 		os.Exit(1)
 	}
 }
-
