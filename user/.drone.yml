@@ -17,7 +17,7 @@ steps:
   - name: test
     image: golang
     commands:
-      - go test -v ./... -covermode=count -coverprofile=coverage.out
+      - go test -v ./... -covermode=count > ./coverage.out
     environment:
       MONITOR_DB_HOST: "database"
       MONITOR_DB_PORT: 5432
@@ -27,7 +27,7 @@ steps:
       token:
         from_secret: coveralls_token
       files:
-        - coverage.out
+        - ./coverage.out
 
 services:
   - name: database
