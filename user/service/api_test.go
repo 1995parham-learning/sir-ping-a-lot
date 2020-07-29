@@ -52,7 +52,7 @@ func Register(t *testing.T, api service.API) {
 	e := echo.New()
 	e.POST("/register", api.Register)
 
-	registerationJSON := `{"Email":"parham.alvani@gmail.com",
+	registerationJSON := `{"Email":"raha.alvani@gmail.com",
 							"Password":"1378"}`
 
 	req := httptest.NewRequest(http.MethodPost, "/register", strings.NewReader(registerationJSON))
@@ -76,7 +76,7 @@ func Login(t *testing.T, api service.API) string {
 	e := echo.New()
 	e.POST("/login", api.Login)
 
-	loginJSON := `{"Email":"parham.alvani@gmail.com",
+	loginJSON := `{"Email":"raha.alvani@gmail.com",
 							"Password":"1378"}`
 
 	req := httptest.NewRequest(http.MethodPost, "/login", strings.NewReader(loginJSON))
