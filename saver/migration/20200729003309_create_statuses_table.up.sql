@@ -11,7 +11,7 @@ CREATE OR REPLACE FUNCTION delete_expired_row()
 RETURNS TRIGGER AS
     $BODY$
         BEGIN
-        DELETE FROM statuses WHEN clock < NOW() - INTERVAL '2 days';
+        DELETE FROM statuses WHERE clock < NOW() - INTERVAL '2 days';
         RETURN NULL;
         END;
     $BODY$

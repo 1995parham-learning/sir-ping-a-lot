@@ -11,14 +11,14 @@ import (
 )
 
 type Subscriber struct {
-	Nats     *nats.Conn
+	Nats     *nats.EncodedConn
 	NatsCfg  config.Nats
 	Redis    status.Memory
 	RedisCfg config.Redis
 	Status   status.Status
 }
 
-func New(nc *nats.Conn, natsCfg config.Nats, r status.Memory,
+func New(nc *nats.EncodedConn, natsCfg config.Nats, r status.Memory,
 	redisCfg config.Redis, s status.Status) Subscriber {
 	return Subscriber{
 		Nats:     nc,
@@ -30,16 +30,9 @@ func New(nc *nats.Conn, natsCfg config.Nats, r status.Memory,
 }
 
 func (s *Subscriber) Subscribe() {
-	c, err := nats.NewEncodedConn(s.Nats, nats.GOB_ENCODER)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer c.Close()
-
 	ch := make(chan model.Status)
 
-	if _, err := c.QueueSubscribe(s.NatsCfg.Topic, s.NatsCfg.Queue, func(s model.Status) {
+	if _, err := s.Nats.QueueSubscribe(s.NatsCfg.Topic, s.NatsCfg.Queue, func(s model.Status) {
 		ch <- s
 	}); err != nil {
 		log.Fatal(err)
@@ -49,12 +42,7 @@ func (s *Subscriber) Subscribe() {
 }
 
 func (s *Subscriber) Publish(st model.Status) {
-	ec, err := nats.NewEncodedConn(s.Nats, nats.GOB_ENCODER)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = ec.Publish(s.NatsCfg.Topic, st)
+	err := s.Nats.Publish(s.NatsCfg.Topic, st)
 	if err != nil {
 		log.Fatal(err)
 	}
