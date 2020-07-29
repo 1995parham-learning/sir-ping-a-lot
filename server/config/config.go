@@ -10,8 +10,9 @@ import (
 )
 
 type Config struct {
-	Database Database `mapstructure:"db"`
-	Nats     Nats     `mapstructure:"nats"`
+	Database      Database `mapstructure:"db"`
+	Nats          Nats     `mapstructure:"nats"`
+	TimeThreshold int      `mapstructure:"threshold"`
 }
 
 type Database struct {

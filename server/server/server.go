@@ -12,18 +12,20 @@ import (
 )
 
 type Server struct {
-	URL      store.URL
-	Duration int
-	NatsConn *nats.EncodedConn
-	NatsCfg  config.Nats
+	URL           store.URL
+	Duration      int
+	NatsConn      *nats.EncodedConn
+	NatsCfg       config.Nats
+	TimeThreshold int
 }
 
-func New(u store.URL, d int, conn *nats.EncodedConn, cfg config.Nats) Server {
+func New(u store.URL, d int, conn *nats.EncodedConn, cfg config.Nats, th int) Server {
 	return Server{
-		URL:      u,
-		Duration: d,
-		NatsConn: conn,
-		NatsCfg:  cfg,
+		URL:           u,
+		Duration:      d,
+		NatsConn:      conn,
+		NatsCfg:       cfg,
+		TimeThreshold: th,
 	}
 }
 
@@ -36,7 +38,7 @@ func (s *Server) Run() {
 
 		counter++
 
-		if counter == 101 {
+		if counter == s.TimeThreshold {
 			counter = 1
 		}
 

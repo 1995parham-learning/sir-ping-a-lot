@@ -11,7 +11,7 @@ import (
 func main() {
 	cfg := config.Read()
 	d := db.New(cfg.Database)
-	s := server.New(store.NewURL(d), 1, balancer.New(cfg.Nats), cfg.Nats)
+	s := server.New(store.NewURL(d), 1, balancer.New(cfg.Nats), cfg.Nats, cfg.TimeThreshold)
 
 	s.Run()
 }

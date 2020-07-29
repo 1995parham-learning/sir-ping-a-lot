@@ -14,7 +14,7 @@ func TestServer_Run(t *testing.T) {
 	table := map[string]int{"elahe.dstn@gmail.com": 1}
 	cfg := config.Read()
 
-	s := server.New(mock.New(table), 1, balancer.New(cfg.Nats), cfg.Nats)
+	s := server.New(mock.New(table), 1, balancer.New(cfg.Nats), cfg.Nats, cfg.TimeThreshold)
 
 	go s.Run()
 

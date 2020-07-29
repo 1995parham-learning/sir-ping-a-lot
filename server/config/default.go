@@ -12,4 +12,5 @@ nats:
   host: nats://localhost:4221
   topic: check
   queue: monitors
+threshold: 101
 `
