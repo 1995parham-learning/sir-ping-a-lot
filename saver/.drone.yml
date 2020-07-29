@@ -7,3 +7,19 @@ steps:
     image: golangci/golangci-lint
     commands:
       - golangci-lint run --enable-all
+  - name: test
+    image: golang
+    commands:
+      - go test -v ./... -covermode=count -coverprofile=coverage.out
+    environment:
+      MONITOR_NATS_HOST: "nats://nats:4222"
+  - name: coverage
+    image: plugins/codecov
+    settings:
+     token:
+      from_secret: codecov_token
+     files:
+      - coverage.out
+services:
+  - name: nats
+    image: nats:latest
