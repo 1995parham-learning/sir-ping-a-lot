@@ -34,6 +34,12 @@ func (s *Server) Run() {
 	for {
 		<-ticker.C
 
+		counter++
+
+		if counter == 101 {
+			counter = 1
+		}
+
 		urls, err := s.URL.GetTable()
 		if err != nil {
 			log.Fatal(err)
