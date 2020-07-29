@@ -27,7 +27,7 @@ steps:
       token:
         from_secret: coveralls_token
       files:
-        - ./coverage.out
+        - coverage.out
 
 services:
   - name: database
