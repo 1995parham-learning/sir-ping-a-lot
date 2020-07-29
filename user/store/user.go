@@ -2,6 +2,7 @@ package store
 
 import (
 	"errors"
+	"log"
 	"user/model"
 
 	"golang.org/x/crypto/bcrypt"
@@ -27,6 +28,13 @@ func NewUser(d *gorm.DB) SQLUser {
 }
 
 func (u SQLUser) Insert(user model.User) error {
+	hashPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), 14)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	user.Password = string(hashPassword)
+
 	result := u.DB.Create(&user)
 
 	return result.Error

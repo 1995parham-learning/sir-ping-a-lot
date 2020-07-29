@@ -29,7 +29,6 @@ func TestUser(t *testing.T) {
 	assert.Nil(t, err)
 
 	assert.Equal(t, m.Email, u.Email)
-	assert.Equal(t, m.Password, u.Password)
 }
 
 func TestURL(t *testing.T) {

@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-	"log"
 	"net/http"
 	"net/url"
 	"user/authentication"
@@ -12,7 +11,6 @@ import (
 	"user/store"
 
 	"github.com/labstack/echo"
-	"golang.org/x/crypto/bcrypt"
 )
 
 var ErrLoggedOut = errors.New("you are not logged in")
@@ -42,13 +40,6 @@ func (a API) Register(c echo.Context) error {
 	if user.Email == "" || user.Password == "" {
 		return echo.NewHTTPError(http.StatusBadRequest, "Email and password cannot be empty")
 	}
-
-	hashPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), 14)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	user.Password = string(hashPassword)
 
 	//nolint: errcheck
 	if err := a.User.Insert(user); err != nil {
