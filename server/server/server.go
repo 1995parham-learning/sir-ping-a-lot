@@ -65,7 +65,7 @@ func (s *Server) Publish(u model.URL) {
 	}
 }
 
-// This function is only used for test
+// This function is only used for test.
 func (s *Server) Subscribe() model.URL {
 	ch := make(chan model.URL)
 
