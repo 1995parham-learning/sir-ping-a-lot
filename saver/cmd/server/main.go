@@ -10,7 +10,7 @@ import (
 )
 
 func Register(root *cobra.Command, n *nats.EncodedConn, natsCfg config.Nats,
-	r status.RedisStatus, redisCfg config.Redis, s status.SQLStatus) {
+	r status.RedisStatus, redisCfg config.Redis, s status.Status) {
 	c := cobra.Command{
 		Use:   "server",
 		Short: "Subscribes to the right topic",
