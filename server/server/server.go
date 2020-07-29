@@ -14,11 +14,11 @@ import (
 type Server struct {
 	URL      store.URL
 	Duration int
-	NatsConn *nats.Conn
+	NatsConn *nats.EncodedConn
 	NatsCfg  config.Nats
 }
 
-func New(u store.URL, d int, conn *nats.Conn, cfg config.Nats) Server {
+func New(u store.URL, d int, conn *nats.EncodedConn, cfg config.Nats) Server {
 	return Server{
 		URL:      u,
 		Duration: d,
@@ -59,12 +59,7 @@ func (s *Server) Run() {
 }
 
 func (s *Server) Publish(u model.URL) {
-	ec, err := nats.NewEncodedConn(s.NatsConn, nats.GOB_ENCODER)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = ec.Publish(s.NatsCfg.Topic, u)
+	err := s.NatsConn.Publish(s.NatsCfg.Topic, u)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -72,16 +67,9 @@ func (s *Server) Publish(u model.URL) {
 
 // This function is only used for test
 func (s *Server) Subscribe() model.URL {
-	ec, err := nats.NewEncodedConn(s.NatsConn, nats.GOB_ENCODER)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer ec.Close()
-
 	ch := make(chan model.URL)
 
-	if _, err := ec.QueueSubscribe(s.NatsCfg.Topic, "test", func(s model.URL) {
+	if _, err := s.NatsConn.QueueSubscribe(s.NatsCfg.Topic, "test", func(s model.URL) {
 		ch <- s
 	}); err != nil {
 		log.Fatal(err)
