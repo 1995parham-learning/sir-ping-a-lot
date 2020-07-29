@@ -7,7 +7,7 @@ type Redis struct {
 }
 
 func NewRedis() Redis {
-	return Redis{Memory:make(map[int]int)}
+	return Redis{Memory: make(map[int]int)}
 }
 
 func (r *Redis) Insert(status model.Status) {

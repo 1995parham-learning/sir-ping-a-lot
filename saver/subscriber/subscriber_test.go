@@ -19,7 +19,6 @@ func TestSubscriber_Subscribe(t *testing.T) {
 	r := mock.NewRedis()
 	d := mock.Status{}
 
-
 	s := subscriber.New(n, cfg.Nats, &r, cfg.Redis, &d)
 
 	s.Subscribe()

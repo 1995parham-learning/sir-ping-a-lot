@@ -2,12 +2,13 @@ package migrate
 
 import (
 	"database/sql"
+	"errors"
 	"log"
 	"saver/config"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
-	_ "github.com/golang-migrate/migrate/v4/source/file"
+	_ "github.com/golang-migrate/migrate/v4/source/file"// Imported for its side effects
 	"github.com/spf13/cobra"
 )
 
@@ -31,7 +32,7 @@ func Register(root *cobra.Command, cfg config.Database) {
 				log.Fatal(err)
 			}
 
-			if err := p.Up(); err != nil && err != migrate.ErrNoChange {
+			if err := p.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
 				log.Fatal(err)
 			}
 		},

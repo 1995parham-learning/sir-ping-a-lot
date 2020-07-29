@@ -15,8 +15,8 @@ func Register(root *cobra.Command, n *nats.EncodedConn, natsCfg config.Nats,
 		Use:   "server",
 		Short: "Subscribes to the right topic",
 		Run: func(cmd *cobra.Command, args []string) {
-			s := subscriber.New(n, natsCfg, &r, redisCfg, s)
-			s.Subscribe()
+			server := subscriber.New(n, natsCfg, &r, redisCfg, s)
+			server.Subscribe()
 		},
 	}
 
