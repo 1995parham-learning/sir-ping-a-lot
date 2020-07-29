@@ -11,6 +11,8 @@ steps:
     image: golang
     commands:
       - go test -v ./... -covermode=count -coverprofile=coverage.out
+    environment:
+      MONITOR_NATS_HOST: "nats://nats:4222"
   - name: coverage
     image: plugins/codecov
     settings:
@@ -21,5 +23,3 @@ steps:
 services:
   - name: nats
     image: nats:latest
-    environment:
-      MONITOR_NATS_HOST: "nats://localhost:4222"
