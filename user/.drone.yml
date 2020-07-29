@@ -21,7 +21,7 @@ steps:
     environment:
       MONITOR_DB_HOST: "database"
       MONITOR_DB_PORT: 5432
-      
+
 services:
   - name: database
     image: postgres:latest
