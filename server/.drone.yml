@@ -21,3 +21,5 @@ steps:
 services:
   - name: nats
     image: nats:latest
+    environment:
+      MONITOR_NATS_HOST: "nats://localhost:4222"
