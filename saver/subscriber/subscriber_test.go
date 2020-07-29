@@ -21,7 +21,7 @@ func TestSubscriber_Subscribe(t *testing.T) {
 
 	s := subscriber.New(n, cfg.Nats, &r, cfg.Redis, &d)
 
-	s.Subscribe()
+	go s.Subscribe()
 
 	st := model.Status{
 		ID:         1,
@@ -32,5 +32,6 @@ func TestSubscriber_Subscribe(t *testing.T) {
 
 	s.Publish(st)
 
+	time.Sleep(2 * time.Second)
 	assert.Equal(t, r.Memory[st.URLID], st.StatusCode)
 }
