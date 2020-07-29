@@ -12,13 +12,13 @@ import (
 )
 
 type Server struct {
-	URL      store.SQLURL
+	URL      store.URL
 	Duration int
 	NatsConn *nats.Conn
 	NatsCfg  config.Nats
 }
 
-func New(u store.SQLURL, d int, conn *nats.Conn, cfg config.Nats) Server {
+func New(u store.URL, d int, conn *nats.Conn, cfg config.Nats) Server {
 	return Server{
 		URL:      u,
 		Duration: d,
@@ -68,4 +68,24 @@ func (s *Server) Publish(u model.URL) {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+// This function is only used for test
+func (s *Server) Subscribe() model.URL {
+	ec, err := nats.NewEncodedConn(s.NatsConn, nats.GOB_ENCODER)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer ec.Close()
+
+	ch := make(chan model.URL)
+
+	if _, err := ec.QueueSubscribe(s.NatsCfg.Topic, "test", func(s model.URL) {
+		ch <- s
+	}); err != nil {
+		log.Fatal(err)
+	}
+
+	return <-ch
 }
