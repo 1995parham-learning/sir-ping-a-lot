@@ -8,7 +8,7 @@ import (
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
-	_ "github.com/golang-migrate/migrate/v4/source/file"// Imported for its side effects
+	_ "github.com/golang-migrate/migrate/v4/source/file" // Imported for its side effects
 	"github.com/spf13/cobra"
 )
 
