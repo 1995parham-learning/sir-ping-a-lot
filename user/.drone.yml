@@ -17,10 +17,17 @@ steps:
   - name: test
     image: golang
     commands:
-      - go test -v ./...
+      - go test -v ./... -covermode=count -coverprofile=coverage.out
     environment:
       MONITOR_DB_HOST: "database"
       MONITOR_DB_PORT: 5432
+  - name: coveralls
+    image: lizheming/drone-coveralls
+    settings:
+      token:
+        from_secret: coveralls_token
+      files:
+        - ./coverage.out
 
 services:
   - name: database

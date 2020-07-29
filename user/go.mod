@@ -11,6 +11,7 @@ require (
 	github.com/spf13/cobra v1.0.0
 	github.com/spf13/viper v1.7.0
 	github.com/stretchr/testify v1.5.1
+	golang.org/x/crypto v0.0.0-20200709230013-948cd5f35899
 	gorm.io/driver/postgres v0.2.6
 	gorm.io/gorm v0.2.24
 )
