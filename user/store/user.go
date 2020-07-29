@@ -4,6 +4,7 @@ import (
 	"errors"
 	"user/model"
 
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -43,9 +44,8 @@ func (u SQLUser) Retrieve(user model.User) (model.User, error) {
 		return us, err
 	}
 
-	if us.Password != user.Password {
-		err = ErrWrongPass
-		return us, err
+	if err := bcrypt.CompareHashAndPassword([]byte(us.Password), []byte(user.Password)); err != nil {
+		return us, ErrWrongPass
 	}
 
 	return us, err
