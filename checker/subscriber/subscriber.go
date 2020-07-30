@@ -13,11 +13,11 @@ import (
 )
 
 type Checker struct {
-	Nats    *nats.Conn
+	Nats    *nats.EncodedConn
 	NatsCfg config.Nats
 }
 
-func New(nc *nats.Conn, natsCfg config.Nats) Checker {
+func New(nc *nats.EncodedConn, natsCfg config.Nats) Checker {
 	return Checker{
 		Nats:    nc,
 		NatsCfg: natsCfg,
@@ -25,16 +25,9 @@ func New(nc *nats.Conn, natsCfg config.Nats) Checker {
 }
 
 func (c *Checker) Subscribe() {
-	ec, err := nats.NewEncodedConn(c.Nats, nats.GOB_ENCODER)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer ec.Close()
-
 	ch := make(chan model.URL)
 
-	if _, err := ec.QueueSubscribe(c.NatsCfg.Topic, c.NatsCfg.Queue, func(s model.URL) {
+	if _, err := c.Nats.QueueSubscribe(c.NatsCfg.Topic, c.NatsCfg.Queue, func(s model.URL) {
 		ch <- s
 	}); err != nil {
 		log.Fatal(err)
@@ -84,12 +77,7 @@ func fetch(u model.URL) (*http.Response, error) {
 }
 
 func (c *Checker) Publish(s model.Status) {
-	ec, err := nats.NewEncodedConn(c.Nats, nats.GOB_ENCODER)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = ec.Publish("save", s)
+	err := c.Nats.Publish("save", s)
 	if err != nil {
 		log.Fatal(err)
 	}
