@@ -13,6 +13,8 @@ steps:
       - go test -v ./... -covermode=count -coverprofile=coverage.out
     environment:
       MONITOR_NATS_HOST: "nats://nats:4222"
+      MONITOR_REDIS_HOST: "redis"
+      MONITOR_REDIS_PORT: 6379
   - name: coverage
     image: plugins/codecov
     settings:
@@ -23,3 +25,5 @@ steps:
 services:
   - name: nats
     image: nats:latest
+  - name: redis
+    image: redis:latest
