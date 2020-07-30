@@ -104,7 +104,7 @@ func (c *Checker) SubscribeStatus(st *model.Status) {
 		log.Fatal(err)
 	}
 
-	f := <- ch
+	f := <-ch
 
 	st.StatusCode = f.StatusCode
 }
