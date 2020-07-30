@@ -27,3 +27,4 @@ services:
     image: nats:latest
   - name: redis
     image: redis:latest
+    
