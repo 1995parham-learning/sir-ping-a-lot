@@ -85,3 +85,26 @@ func (c *Checker) Publish(s model.Status) {
 	fmt.Println("In the checker and publish")
 	fmt.Println(s)
 }
+
+// Only used for testing.
+func (c *Checker) PublishURL(u model.URL) {
+	err := c.Nats.Publish(c.NatsCfg.Topic, u)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+// Only used for testing.
+func (c *Checker) SubscribeStatus(st *model.Status) {
+	ch := make(chan model.Status)
+
+	if _, err := c.Nats.QueueSubscribe("save", "test", func(s model.Status) {
+		ch <- s
+	}); err != nil {
+		log.Fatal(err)
+	}
+
+	f := <- ch
+
+	st.StatusCode = f.StatusCode
+}
