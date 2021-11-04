@@ -29,25 +29,27 @@ type JWT struct {
 }
 
 func Read() Config {
-	viper.AddConfigPath(".")
-	viper.SetConfigType("yml")
+	v := viper.New()
 
-	if err := viper.ReadConfig(bytes.NewBufferString(Default)); err != nil {
+	v.AddConfigPath(".")
+	v.SetConfigType("yml")
+
+	if err := v.ReadConfig(bytes.NewBufferString(Default)); err != nil {
 		log.Fatalf("err: %s", err)
 	}
 
-	viper.SetConfigName("config")
+	v.SetConfigName("config")
 
-	if err := viper.MergeInConfig(); err != nil {
+	if err := v.MergeInConfig(); err != nil {
 		log.Print("No config file found")
 	}
 
-	viper.SetEnvPrefix("monitor")
-	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))
-	viper.AutomaticEnv()
+	v.SetEnvPrefix("monitor")
+	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))
+	v.AutomaticEnv()
 
 	var cfg Config
-	if err := viper.Unmarshal(&cfg); err != nil {
+	if err := v.Unmarshal(&cfg); err != nil {
 		log.Fatalf("err: %s", err)
 	}
 
