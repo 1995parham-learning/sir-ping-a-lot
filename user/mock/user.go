@@ -17,8 +17,7 @@ type User struct {
 }
 
 func (u User) Insert(user model.User) error {
-	_, ok := u.Info[user.Email]
-	if ok {
+	if _, ok := u.Info[user.Email]; ok {
 		return ErrDuplicateEmail
 	}
 
@@ -29,7 +28,6 @@ func (u User) Insert(user model.User) error {
 
 func (u User) Retrieve(user model.User) (model.User, error) {
 	pass, ok := u.Info[user.Email]
-
 	if ok {
 		if user.Password == pass {
 			return model.User{
