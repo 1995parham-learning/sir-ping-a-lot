@@ -51,6 +51,8 @@ func Read() Config {
 		log.Fatalf("err: %s", err)
 	}
 
+	log.Printf("configuration %+v", cfg)
+
 	return cfg
 }
 
