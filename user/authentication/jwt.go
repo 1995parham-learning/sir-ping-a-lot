@@ -11,7 +11,7 @@ import (
 func CreateToken(id int, cfg config.JWT) (string, error) {
 	atClaims := jwt.MapClaims{}
 	atClaims["authorized"] = true
-	atClaims["github.com/httpmon/user_id"] = id
+	atClaims["user_id"] = id
 	atClaims["exp"] = time.Now().Add(time.Minute * time.Duration(cfg.Expiration)).Unix()
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
 
@@ -33,6 +33,7 @@ func ValidateToken(token string, cfg config.JWT) (in bool, i int) {
 		return false, 0
 	}
 
+	// nolint: varnamelen
 	auth, ok := claims["authorized"].(bool)
 	if !ok {
 		return false, 0
@@ -43,14 +44,14 @@ func ValidateToken(token string, cfg config.JWT) (in bool, i int) {
 		return false, 0
 	}
 
-	id, ok := claims["github.com/httpmon/user_id"].(float64)
+	tokenID, ok := claims["user_id"].(float64)
 	if !ok {
 		return false, 0
 	}
 
 	if auth && exp > float64(time.Now().Unix()) {
-		return true, int(id)
+		return true, int(tokenID)
 	}
 
-	return false, int(id)
+	return false, int(tokenID)
 }

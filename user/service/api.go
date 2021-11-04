@@ -84,8 +84,7 @@ func (a API) Add(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	in, id := authentication.ValidateToken(token, a.Config)
-
+	in, userID := authentication.ValidateToken(token, a.Config)
 	if !in {
 		return echo.NewHTTPError(http.StatusForbidden, ErrLoggedOut.Error())
 	}
@@ -97,7 +96,7 @@ func (a API) Add(c echo.Context) error {
 
 	var u model.URL
 
-	u.UserID = id
+	u.UserID = userID
 	u.URL = newURL.URL
 	u.Period = newURL.Period
 
