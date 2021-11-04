@@ -2,7 +2,7 @@ package authentication
 
 import (
 	"time"
-	"user/config"
+	"github.com/httpmon/user/config"
 
 	"github.com/dgrijalva/jwt-go"
 )
@@ -12,7 +12,7 @@ func CreateToken(id int, cfg config.JWT) (string, error) {
 
 	atClaims := jwt.MapClaims{}
 	atClaims["authorized"] = true
-	atClaims["user_id"] = id
+	atClaims["github.com/httpmon/user_id"] = id
 	atClaims["exp"] = time.Now().Add(time.Minute * time.Duration(cfg.Expiration)).Unix()
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
 
@@ -36,7 +36,7 @@ func ValidateToken(token string, cfg config.JWT) (in bool, i int) {
 
 	auth := claims["authorized"].(bool)
 	exp := claims["exp"].(float64)
-	id := claims["user_id"].(float64)
+	id := claims["github.com/httpmon/user_id"].(float64)
 
 	if auth && exp > float64(time.Now().Unix()) {
 		return true, int(id)

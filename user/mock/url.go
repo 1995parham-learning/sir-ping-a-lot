@@ -1,7 +1,7 @@
 package mock
 
 import (
-	"user/model"
+	"github.com/httpmon/user/model"
 )
 
 type URL struct {

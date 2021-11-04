@@ -17,7 +17,7 @@ type Config struct {
 type Database struct {
 	Host     string `mapstructure:"host"`
 	Port     string `mapstructure:"port"`
-	User     string `mapstructure:"user"`
+	User     string `mapstructure:"github.com/httpmon/user"`
 	DBName   string `mapstructure:"dbname"`
 	Password string `mapstructure:"password"`
 	SSLmode  string `mapstructure:"sslmode"`
@@ -55,6 +55,6 @@ func Read() Config {
 }
 
 func (d Database) Cstring() string {
-	return fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s  sslmode=%s",
+	return fmt.Sprintf("host=%s port=%s github.com/httpmon/user=%s dbname=%s password=%s  sslmode=%s",
 		d.Host, d.Port, d.User, d.DBName, d.Password, d.SSLmode)
 }

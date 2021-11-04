@@ -4,11 +4,11 @@ import (
 	"errors"
 	"net/http"
 	"net/url"
-	"user/authentication"
-	"user/config"
-	"user/model"
-	"user/request"
-	"user/store"
+	"github.com/httpmon/user/authentication"
+	"github.com/httpmon/user/config"
+	"github.com/httpmon/user/model"
+	"github.com/httpmon/user/request"
+	"github.com/httpmon/user/store"
 
 	"github.com/labstack/echo"
 )
@@ -31,36 +31,36 @@ func (a API) Run() {
 }
 
 func (a API) Register(c echo.Context) error {
-	var user model.User
+	var github.com/httpmon/user model.User
 
-	if err := c.Bind(&user); err != nil {
+	if err := c.Bind(&github.com/httpmon/user); err != nil {
 		return err
 	}
 
-	if user.Email == "" || user.Password == "" {
+	if github.com/httpmon/user.Email == "" || github.com/httpmon/user.Password == "" {
 		return echo.NewHTTPError(http.StatusBadRequest, "Email and password cannot be empty")
 	}
 
 	//nolint: errcheck
-	if err := a.User.Insert(user); err != nil {
+	if err := a.User.Insert(github.com/httpmon/user); err != nil {
 		c.JSON(http.StatusConflict, err.Error())
 	}
 
-	return c.JSON(http.StatusCreated, user)
+	return c.JSON(http.StatusCreated, github.com/httpmon/user)
 }
 
 func (a API) Login(c echo.Context) error {
-	var user model.User
+	var github.com/httpmon/user model.User
 
-	if err := c.Bind(&user); err != nil {
+	if err := c.Bind(&github.com/httpmon/user); err != nil {
 		return err
 	}
 
-	if user.Email == "" || user.Password == "" {
+	if github.com/httpmon/user.Email == "" || github.com/httpmon/user.Password == "" {
 		return echo.NewHTTPError(http.StatusBadRequest, "Email and password cannot be empty")
 	}
 
-	us, err := a.User.Retrieve(user)
+	us, err := a.User.Retrieve(github.com/httpmon/user)
 	if err != nil {
 		return c.JSON(http.StatusNotFound, err.Error())
 	}

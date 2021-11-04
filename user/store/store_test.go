@@ -3,10 +3,10 @@ package store_test
 import (
 	"fmt"
 	"testing"
-	"user/config"
-	"user/db"
-	"user/model"
-	"user/store"
+	"github.com/httpmon/user/config"
+	"github.com/httpmon/user/db"
+	"github.com/httpmon/user/model"
+	"github.com/httpmon/user/store"
 
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/stretchr/testify/assert"
@@ -15,16 +15,16 @@ import (
 func TestUser(t *testing.T) {
 	cfg := config.Read()
 	d := db.New(cfg.Database)
-	user := store.NewUser(d)
+	github.com/httpmon/user := store.NewUser(d)
 
 	m := model.User{
 		Email:    "parham.alvani@gmail.com",
 		Password: "1373",
 	}
 
-	assert.Nil(t, user.Insert(m))
+	assert.Nil(t, github.com/httpmon/user.Insert(m))
 
-	u, err := user.Retrieve(m)
+	u, err := github.com/httpmon/user.Retrieve(m)
 
 	assert.Nil(t, err)
 
@@ -34,7 +34,7 @@ func TestUser(t *testing.T) {
 func TestURL(t *testing.T) {
 	cfg := config.Read()
 	d := db.New(cfg.Database)
-	user := store.NewUser(d)
+	github.com/httpmon/user := store.NewUser(d)
 
 	m := model.User{
 		ID:       1,
@@ -42,7 +42,7 @@ func TestURL(t *testing.T) {
 		Password: "1373",
 	}
 
-	if err := user.Insert(m); err != nil {
+	if err := github.com/httpmon/user.Insert(m); err != nil {
 		fmt.Println(err)
 	}
 

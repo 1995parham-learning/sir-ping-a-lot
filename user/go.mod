@@ -1,6 +1,6 @@
-module user
+module github.com/httpmon/user
 
-go 1.13
+go 1.17
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible

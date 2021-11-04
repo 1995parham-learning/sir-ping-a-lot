@@ -3,9 +3,9 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"user/cmd/migrate"
-	"user/cmd/server"
-	"user/config"
+	"github.com/httpmon/user/cmd/migrate"
+	"github.com/httpmon/user/cmd/server"
+	"github.com/httpmon/user/config"
 
 	"github.com/spf13/cobra"
 )
@@ -15,7 +15,7 @@ import (
 func Execute() {
 	// rootCmd represents the base command when called without any subcommands
 	rootCmd := &cobra.Command{
-		Use:   "user",
+		Use:   "github.com/httpmon/user",
 		Short: "A brief description of your application",
 	}
 

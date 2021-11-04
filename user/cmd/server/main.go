@@ -1,10 +1,10 @@
 package server
 
 import (
-	"user/config"
-	"user/db"
-	"user/service"
-	"user/store"
+	"github.com/httpmon/user/config"
+	"github.com/httpmon/user/db"
+	"github.com/httpmon/user/service"
+	"github.com/httpmon/user/store"
 
 	"github.com/spf13/cobra"
 )

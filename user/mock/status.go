@@ -1,6 +1,6 @@
 package mock
 
-import "user/model"
+import "github.com/httpmon/user/model"
 
 type Status struct {
 }

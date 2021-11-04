@@ -2,7 +2,7 @@ package db
 
 import (
 	"log"
-	"user/config"
+	"github.com/httpmon/user/config"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"

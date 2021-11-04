@@ -2,38 +2,38 @@ package mock
 
 import (
 	"errors"
-	"user/model"
+	"github.com/httpmon/user/model"
 )
 
 var (
 	ErrDuplicateEmail = errors.New("this email exists")
 	ErrWrongPass      = errors.New("password is not correct")
-	ErrNotFound       = errors.New("this user doesn't exist in the database")
+	ErrNotFound       = errors.New("this github.com/httpmon/user doesn't exist in the database")
 )
 
 type User struct {
 	Info map[string]string
 }
 
-func (u User) Insert(user model.User) error {
-	_, ok := u.Info[user.Email]
+func (u User) Insert(github.com/httpmon/user model.User) error {
+	_, ok := u.Info[github.com/httpmon/user.Email]
 	if ok {
 		return ErrDuplicateEmail
 	}
 
-	u.Info[user.Email] = user.Password
+	u.Info[github.com/httpmon/user.Email] = github.com/httpmon/user.Password
 
 	return nil
 }
 
-func (u User) Retrieve(user model.User) (model.User, error) {
-	pass, ok := u.Info[user.Email]
+func (u User) Retrieve(github.com/httpmon/user model.User) (model.User, error) {
+	pass, ok := u.Info[github.com/httpmon/user.Email]
 
 	if ok {
-		if user.Password == pass {
+		if github.com/httpmon/user.Password == pass {
 			return model.User{
 				ID:       0,
-				Email:    user.Email,
+				Email:    github.com/httpmon/user.Email,
 				Password: pass,
 				Urls:     nil,
 			}, nil

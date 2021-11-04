@@ -4,7 +4,7 @@ const Default = `
 db:
   host: 127.0.0.1
   port: "5431"
-  user: postgres
+  github.com/httpmon/user: postgres
   dbname: monitor
   password: postgres
   sslmode: disable
