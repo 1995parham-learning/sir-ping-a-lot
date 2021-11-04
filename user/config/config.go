@@ -57,6 +57,6 @@ func Read() Config {
 }
 
 func (d Database) Cstring() string {
-	return fmt.Sprintf("host=%s port=%s github.com/httpmon/user=%s dbname=%s password=%s  sslmode=%s",
+	return fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s  sslmode=%s",
 		d.Host, d.Port, d.User, d.DBName, d.Password, d.SSLmode)
 }
