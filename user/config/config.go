@@ -17,7 +17,7 @@ type Config struct {
 type Database struct {
 	Host     string `mapstructure:"host"`
 	Port     string `mapstructure:"port"`
-	User     string `mapstructure:"github.com/httpmon/user"`
+	User     string `mapstructure:"user"`
 	DBName   string `mapstructure:"dbname"`
 	Password string `mapstructure:"password"`
 	SSLmode  string `mapstructure:"sslmode"`
