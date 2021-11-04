@@ -2,9 +2,9 @@ package authentication_test
 
 import (
 	"testing"
+
 	"github.com/httpmon/user/authentication"
 	"github.com/httpmon/user/config"
-
 	"github.com/stretchr/testify/assert"
 )
 
