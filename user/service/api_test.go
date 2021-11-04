@@ -13,7 +13,7 @@ import (
 	"github.com/httpmon/user/config"
 	"github.com/httpmon/user/mock"
 	"github.com/httpmon/user/service"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -145,8 +145,7 @@ func TestAPI(t *testing.T) {
 }
 
 func checkClose(resp *http.Response) {
-	err := resp.Body.Close()
-	if err != nil {
+	if err := resp.Body.Close(); err != nil {
 		log.Fatal(err)
 	}
 }
