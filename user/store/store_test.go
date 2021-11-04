@@ -24,11 +24,10 @@ func TestUser(t *testing.T) {
 		Password: "1373",
 	}
 
-	assert.Nil(t, user.Insert(m))
+	assert.NoError(t, user.Insert(m))
 
 	u, err := user.Retrieve(m)
-
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, m.Email, u.Email)
 }
@@ -47,9 +46,7 @@ func TestURL(t *testing.T) {
 		Password: "1373",
 	}
 
-	if err := user.Insert(m); err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, user.Insert(m))
 
 	url := store.NewURL(d)
 
@@ -60,5 +57,5 @@ func TestURL(t *testing.T) {
 		Period: 2,
 	}
 
-	assert.Nil(t, url.Insert(u))
+	assert.NoError(t, url.Insert(u))
 }

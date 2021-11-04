@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	ErrNotFound  = errors.New("this github.com/httpmon/user doesn't exist in the database")
+	ErrNotFound  = errors.New("this user doesn't exist in the database")
 	ErrWrongPass = errors.New("password is not correct")
 )
 
