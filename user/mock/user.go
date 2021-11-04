@@ -2,6 +2,7 @@ package mock
 
 import (
 	"errors"
+
 	"github.com/httpmon/user/model"
 )
 
@@ -15,25 +16,25 @@ type User struct {
 	Info map[string]string
 }
 
-func (u User) Insert(github.com/httpmon/user model.User) error {
-	_, ok := u.Info[github.com/httpmon/user.Email]
+func (u User) Insert(user model.User) error {
+	_, ok := u.Info[user.Email]
 	if ok {
 		return ErrDuplicateEmail
 	}
 
-	u.Info[github.com/httpmon/user.Email] = github.com/httpmon/user.Password
+	u.Info[user.Email] = user.Password
 
 	return nil
 }
 
-func (u User) Retrieve(github.com/httpmon/user model.User) (model.User, error) {
-	pass, ok := u.Info[github.com/httpmon/user.Email]
+func (u User) Retrieve(user model.User) (model.User, error) {
+	pass, ok := u.Info[user.Email]
 
 	if ok {
-		if github.com/httpmon/user.Password == pass {
+		if user.Password == pass {
 			return model.User{
 				ID:       0,
-				Email:    github.com/httpmon/user.Email,
+				Email:    user.Email,
 				Password: pass,
 				Urls:     nil,
 			}, nil

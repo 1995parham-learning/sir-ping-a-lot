@@ -3,6 +3,7 @@ package store_test
 import (
 	"fmt"
 	"testing"
+
 	"github.com/httpmon/user/config"
 	"github.com/httpmon/user/db"
 	"github.com/httpmon/user/model"
@@ -15,16 +16,16 @@ import (
 func TestUser(t *testing.T) {
 	cfg := config.Read()
 	d := db.New(cfg.Database)
-	github.com/httpmon/user := store.NewUser(d)
+	user := store.NewUser(d)
 
 	m := model.User{
 		Email:    "parham.alvani@gmail.com",
 		Password: "1373",
 	}
 
-	assert.Nil(t, github.com/httpmon/user.Insert(m))
+	assert.Nil(t, user.Insert(m))
 
-	u, err := github.com/httpmon/user.Retrieve(m)
+	u, err := user.Retrieve(m)
 
 	assert.Nil(t, err)
 
@@ -34,7 +35,7 @@ func TestUser(t *testing.T) {
 func TestURL(t *testing.T) {
 	cfg := config.Read()
 	d := db.New(cfg.Database)
-	github.com/httpmon/user := store.NewUser(d)
+	user := store.NewUser(d)
 
 	m := model.User{
 		ID:       1,
@@ -42,7 +43,7 @@ func TestURL(t *testing.T) {
 		Password: "1373",
 	}
 
-	if err := github.com/httpmon/user.Insert(m); err != nil {
+	if err := user.Insert(m); err != nil {
 		fmt.Println(err)
 	}
 
