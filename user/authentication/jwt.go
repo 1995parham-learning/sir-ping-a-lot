@@ -2,9 +2,10 @@ package authentication
 
 import (
 	"time"
+
 	"github.com/httpmon/user/config"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 func CreateToken(id int, cfg config.JWT) (string, error) {
