@@ -4,15 +4,18 @@ import (
 	"database/sql"
 	"errors"
 	"log"
-	"github.com/httpmon/user/config"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
-	_ "github.com/golang-migrate/migrate/v4/source/file" // Imported for its side effects
+
+	// import for side effects.
+	_ "github.com/golang-migrate/migrate/v4/source/file"
+	"github.com/httpmon/user/config"
 	"github.com/spf13/cobra"
 )
 
 func Register(root *cobra.Command, cfg config.Database) {
+	// nolint: exhaustivestruct
 	c := cobra.Command{
 		Use:   "migrate",
 		Short: "Manages database, creates and fills tables if don't exist",
