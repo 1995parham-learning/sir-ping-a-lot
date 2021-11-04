@@ -9,6 +9,8 @@ import (
 )
 
 func TestAuthentication(t *testing.T) {
+	t.Parallel()
+
 	cfg := config.Read()
 	id := 1
 

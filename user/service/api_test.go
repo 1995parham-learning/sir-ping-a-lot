@@ -2,7 +2,6 @@ package service_test
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -18,6 +17,8 @@ import (
 )
 
 func TestRegisterEmailEmpty(t *testing.T) {
+	t.Parallel()
+
 	cfg := config.Read()
 
 	api := service.API{
@@ -45,10 +46,12 @@ func TestRegisterEmailEmpty(t *testing.T) {
 
 	assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
 
-	fmt.Println(string(body))
+	log.Println(string(body))
 }
 
 func Register(t *testing.T, api service.API) {
+	t.Helper()
+
 	e := echo.New()
 	e.POST("/register", api.Register)
 
@@ -69,10 +72,12 @@ func Register(t *testing.T, api service.API) {
 
 	assert.Equal(t, http.StatusCreated, resp.StatusCode)
 
-	fmt.Println(string(body))
+	log.Println(string(body))
 }
 
 func Login(t *testing.T, api service.API) string {
+	t.Helper()
+
 	e := echo.New()
 	e.POST("/login", api.Login)
 
@@ -94,18 +99,20 @@ func Login(t *testing.T, api service.API) string {
 
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 
-	fmt.Println(string(body))
+	log.Println(string(body))
 
 	var token string
 
 	if err := json.Unmarshal(body, &token); err != nil {
-		log.Fatal(err)
+		t.Fatal(err)
 	}
 
 	return token
 }
 
 func Add(t *testing.T, token string, api service.API) {
+	t.Helper()
+
 	e := echo.New()
 	e.POST("/url", api.Add)
 
@@ -127,10 +134,12 @@ func Add(t *testing.T, token string, api service.API) {
 
 	assert.Equal(t, http.StatusCreated, resp.StatusCode)
 
-	fmt.Println(string(body))
+	log.Println(string(body))
 }
 
 func TestAPI(t *testing.T) {
+	t.Parallel()
+
 	cfg := config.Read()
 
 	api := service.API{
