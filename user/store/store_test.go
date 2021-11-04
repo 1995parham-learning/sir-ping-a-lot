@@ -1,23 +1,24 @@
 package store_test
 
 import (
-	"fmt"
 	"testing"
 
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/httpmon/user/config"
 	"github.com/httpmon/user/db"
 	"github.com/httpmon/user/model"
 	"github.com/httpmon/user/store"
-
-	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestUser(t *testing.T) {
+	t.Parallel()
+
 	cfg := config.Read()
 	d := db.New(cfg.Database)
 	user := store.NewUser(d)
 
+	// nolint: exhaustivestruct
 	m := model.User{
 		Email:    "parham.alvani@gmail.com",
 		Password: "1373",
@@ -33,10 +34,13 @@ func TestUser(t *testing.T) {
 }
 
 func TestURL(t *testing.T) {
+	t.Parallel()
+
 	cfg := config.Read()
 	d := db.New(cfg.Database)
 	user := store.NewUser(d)
 
+	// nolint: exhaustivestruct
 	m := model.User{
 		ID:       1,
 		Email:    "elahe.dstn@gmail.com",
@@ -44,11 +48,12 @@ func TestURL(t *testing.T) {
 	}
 
 	if err := user.Insert(m); err != nil {
-		fmt.Println(err)
+		t.Fatal(err)
 	}
 
 	url := store.NewURL(d)
 
+	// nolint: exhaustivestruct
 	u := model.URL{
 		UserID: 1,
 		URL:    "https://www.google.com",
