@@ -3,8 +3,8 @@ package store
 import (
 	"errors"
 	"log"
-	"github.com/httpmon/user/model"
 
+	"github.com/httpmon/user/model"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -14,9 +14,11 @@ var (
 	ErrWrongPass = errors.New("password is not correct")
 )
 
+const PasswordHashLen = 14
+
 type User interface {
-	Insert(github.com/httpmon/user model.User) error
-	Retrieve(github.com/httpmon/user model.User) (model.User, error)
+	Insert(user model.User) error
+	Retrieve(user model.User) (model.User, error)
 }
 
 type SQLUser struct {
@@ -27,34 +29,31 @@ func NewUser(d *gorm.DB) SQLUser {
 	return SQLUser{DB: d}
 }
 
-func (u SQLUser) Insert(github.com/httpmon/user model.User) error {
-	hashPassword, err := bcrypt.GenerateFromPassword([]byte(github.com/httpmon/user.Password), 14)
+func (u SQLUser) Insert(user model.User) error {
+	hashPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), PasswordHashLen)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	github.com/httpmon/user.Password = string(hashPassword)
+	user.Password = string(hashPassword)
 
-	result := u.DB.Create(&github.com/httpmon/user)
+	result := u.DB.Create(&user)
 
 	return result.Error
 }
 
-func (u SQLUser) Retrieve(github.com/httpmon/user model.User) (model.User, error) {
+func (u SQLUser) Retrieve(user model.User) (model.User, error) {
 	var us model.User
 
-	u.DB.Where("email = ?", github.com/httpmon/user.Email).First(&us)
-
-	var err error
+	u.DB.Where("email = ?", user.Email).First(&us)
 
 	if us.Email == "" {
-		err = ErrNotFound
-		return us, err
+		return us, ErrNotFound
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(us.Password), []byte(github.com/httpmon/user.Password)); err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(us.Password), []byte(user.Password)); err != nil {
 		return us, ErrWrongPass
 	}
 
-	return us, err
+	return us, nil
 }

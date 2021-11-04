@@ -9,10 +9,10 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+
 	"github.com/httpmon/user/config"
 	"github.com/httpmon/user/mock"
 	"github.com/httpmon/user/service"
-
 	"github.com/labstack/echo"
 	"github.com/stretchr/testify/assert"
 )

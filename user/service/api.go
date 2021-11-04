@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 	"net/url"
+
 	"github.com/httpmon/user/authentication"
 	"github.com/httpmon/user/config"
 	"github.com/httpmon/user/model"
@@ -31,36 +32,36 @@ func (a API) Run() {
 }
 
 func (a API) Register(c echo.Context) error {
-	var github.com/httpmon/user model.User
+	var user model.User
 
-	if err := c.Bind(&github.com/httpmon/user); err != nil {
+	if err := c.Bind(&user); err != nil {
 		return err
 	}
 
-	if github.com/httpmon/user.Email == "" || github.com/httpmon/user.Password == "" {
+	if user.Email == "" || user.Password == "" {
 		return echo.NewHTTPError(http.StatusBadRequest, "Email and password cannot be empty")
 	}
 
 	//nolint: errcheck
-	if err := a.User.Insert(github.com/httpmon/user); err != nil {
+	if err := a.User.Insert(user); err != nil {
 		c.JSON(http.StatusConflict, err.Error())
 	}
 
-	return c.JSON(http.StatusCreated, github.com/httpmon/user)
+	return c.JSON(http.StatusCreated, user)
 }
 
 func (a API) Login(c echo.Context) error {
-	var github.com/httpmon/user model.User
+	var user model.User
 
-	if err := c.Bind(&github.com/httpmon/user); err != nil {
+	if err := c.Bind(&user); err != nil {
 		return err
 	}
 
-	if github.com/httpmon/user.Email == "" || github.com/httpmon/user.Password == "" {
+	if user.Email == "" || user.Password == "" {
 		return echo.NewHTTPError(http.StatusBadRequest, "Email and password cannot be empty")
 	}
 
-	us, err := a.User.Retrieve(github.com/httpmon/user)
+	us, err := a.User.Retrieve(user)
 	if err != nil {
 		return c.JSON(http.StatusNotFound, err.Error())
 	}
