@@ -10,8 +10,7 @@ import (
 	"github.com/httpmon/user/model"
 	"github.com/httpmon/user/request"
 	"github.com/httpmon/user/store"
-
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 var ErrLoggedOut = errors.New("you are not logged in")
@@ -35,7 +34,7 @@ func (a API) Register(c echo.Context) error {
 	var user model.User
 
 	if err := c.Bind(&user); err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
 	if user.Email == "" || user.Password == "" {
@@ -47,6 +46,7 @@ func (a API) Register(c echo.Context) error {
 		c.JSON(http.StatusConflict, err.Error())
 	}
 
+	// nolint: wrapcheck
 	return c.JSON(http.StatusCreated, user)
 }
 
@@ -54,7 +54,7 @@ func (a API) Login(c echo.Context) error {
 	var user model.User
 
 	if err := c.Bind(&user); err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
 	if user.Email == "" || user.Password == "" {
@@ -63,14 +63,15 @@ func (a API) Login(c echo.Context) error {
 
 	us, err := a.User.Retrieve(user)
 	if err != nil {
-		return c.JSON(http.StatusNotFound, err.Error())
+		return echo.NewHTTPError(http.StatusNotFound, err.Error())
 	}
 
 	token, err := authentication.CreateToken(us.ID, a.Config)
 	if err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
+	// nolint: wrapcheck
 	return c.JSON(http.StatusOK, token)
 }
 
@@ -80,7 +81,7 @@ func (a API) Add(c echo.Context) error {
 	token := c.Request().Header.Get("Authorization")
 
 	if err := c.Bind(&newURL); err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
 	in, id := authentication.ValidateToken(token, a.Config)
@@ -101,8 +102,9 @@ func (a API) Add(c echo.Context) error {
 	u.Period = newURL.Period
 
 	if err := a.URL.Insert(u); err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
+	// nolint: wrapcheck
 	return c.JSON(http.StatusCreated, u)
 }

@@ -2,7 +2,6 @@ package store
 
 import (
 	"github.com/httpmon/user/model"
-
 	"gorm.io/gorm"
 )
 
