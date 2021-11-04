@@ -1,12 +1,12 @@
 package cmd
 
 import (
-	"fmt"
+	"log"
 	"os"
+
 	"github.com/httpmon/user/cmd/migrate"
 	"github.com/httpmon/user/cmd/server"
 	"github.com/httpmon/user/config"
-
 	"github.com/spf13/cobra"
 )
 
@@ -14,6 +14,7 @@ import (
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	// rootCmd represents the base command when called without any subcommands
+	// nolint: exhaustivestruct
 	rootCmd := &cobra.Command{
 		Use:   "github.com/httpmon/user",
 		Short: "A brief description of your application",
@@ -25,7 +26,7 @@ func Execute() {
 	server.Register(rootCmd)
 
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		os.Exit(1)
 	}
 }

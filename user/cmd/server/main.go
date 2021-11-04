@@ -5,11 +5,11 @@ import (
 	"github.com/httpmon/user/db"
 	"github.com/httpmon/user/service"
 	"github.com/httpmon/user/store"
-
 	"github.com/spf13/cobra"
 )
 
 func Register(root *cobra.Command) {
+	// nolint: exhaustivestruct
 	c := cobra.Command{
 		Use:   "server",
 		Short: "Runs endpoints",
