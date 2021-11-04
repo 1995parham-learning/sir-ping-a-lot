@@ -41,7 +41,7 @@ func TestURL(t *testing.T) {
 
 	// nolint: exhaustivestruct
 	m := model.User{
-		ID:       1,
+		ID:       2,
 		Email:    "elahe.dstn@gmail.com",
 		Password: "1373",
 	}
@@ -52,7 +52,7 @@ func TestURL(t *testing.T) {
 
 	// nolint: exhaustivestruct
 	u := model.URL{
-		UserID: 1,
+		UserID: 2,
 		URL:    "https://www.google.com",
 		Period: 2,
 	}
