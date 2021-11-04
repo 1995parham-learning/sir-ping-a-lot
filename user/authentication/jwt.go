@@ -1,16 +1,14 @@
 package authentication
 
 import (
+	"fmt"
 	"time"
 
-	"github.com/httpmon/user/config"
-
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/httpmon/user/config"
 )
 
 func CreateToken(id int, cfg config.JWT) (string, error) {
-	var err error
-
 	atClaims := jwt.MapClaims{}
 	atClaims["authorized"] = true
 	atClaims["github.com/httpmon/user_id"] = id
@@ -19,7 +17,7 @@ func CreateToken(id int, cfg config.JWT) (string, error) {
 
 	token, err := at.SignedString([]byte(cfg.Secret))
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("signing token failed %w", err)
 	}
 
 	return token, nil
@@ -35,9 +33,20 @@ func ValidateToken(token string, cfg config.JWT) (in bool, i int) {
 		return false, 0
 	}
 
-	auth := claims["authorized"].(bool)
-	exp := claims["exp"].(float64)
-	id := claims["github.com/httpmon/user_id"].(float64)
+	auth, ok := claims["authorized"].(bool)
+	if !ok {
+		return false, 0
+	}
+
+	exp, ok := claims["exp"].(float64)
+	if !ok {
+		return false, 0
+	}
+
+	id, ok := claims["github.com/httpmon/user_id"].(float64)
+	if !ok {
+		return false, 0
+	}
 
 	if auth && exp > float64(time.Now().Unix()) {
 		return true, int(id)
