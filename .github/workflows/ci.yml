@@ -1,0 +1,93 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  # Detect which service directories changed so we only build/test those.
+  changes:
+    name: detect changes
+    runs-on: ubuntu-latest
+    outputs:
+      services: ${{ steps.filter.outputs.changes }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            user: 'user/**'
+            server: 'server/**'
+            checker: 'checker/**'
+            saver: 'saver/**'
+
+  build:
+    name: ${{ matrix.service }}
+    needs: changes
+    if: ${{ needs.changes.outputs.services != '[]' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service: ${{ fromJSON(needs.changes.outputs.services) }}
+    defaults:
+      run:
+        working-directory: ${{ matrix.service }}
+
+    # Every service talks to NATS, so give the test step a broker to hit.
+    services:
+      nats:
+        image: nats:latest
+        ports:
+          - 4222:4222
+
+    env:
+      MONITOR_NATS_HOST: "nats://localhost:4222"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          # Use each module's own Go version from its go.mod.
+          go-version-file: ${{ matrix.service }}/go.mod
+          cache-dependency-path: ${{ matrix.service }}/go.sum
+
+      - name: build
+        run: go build -v ./...
+
+      - name: test
+        run: go test -v ./... -covermode=atomic -coverprofile=coverage.out
+
+      - name: upload coverage
+        uses: codecov/codecov-action@v4
+        with:
+          files: ${{ matrix.service }}/coverage.out
+          flags: ${{ matrix.service }}
+          token: ${{ secrets.CODECOV_TOKEN }}
+        continue-on-error: true
+
+  lint:
+    name: lint ${{ matrix.service }}
+    needs: changes
+    if: ${{ needs.changes.outputs.services != '[]' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service: ${{ fromJSON(needs.changes.outputs.services) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: ${{ matrix.service }}/go.mod
+          cache: false
+      - uses: golangci/golangci-lint-action@v6
+        with:
+          version: latest
+          working-directory: ${{ matrix.service }}
