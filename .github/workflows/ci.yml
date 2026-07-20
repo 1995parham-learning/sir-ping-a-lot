@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   # Detect which service directories changed so we only build/test those.
+  # Changing the workflow itself re-runs every service.
   changes:
     name: detect changes
     runs-on: ubuntu-latest
@@ -21,10 +22,18 @@ jobs:
         id: filter
         with:
           filters: |
-            user: 'user/**'
-            server: 'server/**'
-            checker: 'checker/**'
-            saver: 'saver/**'
+            user:
+              - 'user/**'
+              - '.github/workflows/ci.yml'
+            server:
+              - 'server/**'
+              - '.github/workflows/ci.yml'
+            checker:
+              - 'checker/**'
+              - '.github/workflows/ci.yml'
+            saver:
+              - 'saver/**'
+              - '.github/workflows/ci.yml'
 
   build:
     name: ${{ matrix.service }}
@@ -39,15 +48,36 @@ jobs:
       run:
         working-directory: ${{ matrix.service }}
 
-    # Every service talks to NATS, so give the test step a broker to hit.
+    # The tests are integration tests that talk to real infrastructure.
+    # Each container is published on the exact port the default config expects
+    # (Postgres 5431, Redis 6378, NATS 4221) so no config override is needed.
     services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: monitor
+        ports:
+          - 5431:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7
+        ports:
+          - 6378:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
       nats:
         image: nats:latest
         ports:
-          - 4222:4222
-
-    env:
-      MONITOR_NATS_HOST: "nats://localhost:4222"
+          - 4221:4222
 
     steps:
       - uses: actions/checkout@v7
@@ -60,6 +90,12 @@ jobs:
 
       - name: build
         run: go build -v ./...
+
+      # Only the user service persists to Postgres in its tests; create its
+      # tables via the GORM-based migrate command before running them.
+      - name: migrate database
+        if: matrix.service == 'user'
+        run: go run . migrate
 
       - name: test
         run: go test -v ./... -covermode=atomic -coverprofile=coverage.out
