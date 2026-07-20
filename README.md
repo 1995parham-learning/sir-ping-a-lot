@@ -3,7 +3,7 @@
 <p align="center">
   <a href="https://github.com/1995parham-learning/sir-ping-a-lot/actions/workflows/ci.yml"><img alt="ci" src="https://github.com/1995parham-learning/sir-ping-a-lot/actions/workflows/ci.yml/badge.svg"></a>
   <img alt="go version" src="https://img.shields.io/badge/go-1.26-00ADD8?logo=go&logoColor=white">
-  <img alt="license" src="https://img.shields.io/badge/license-GPL--3.0%20%26%20Apache--2.0-blue">
+  <img alt="license" src="https://img.shields.io/badge/license-GPL--3.0-blue">
   <img alt="last commit" src="https://img.shields.io/github/last-commit/1995parham-learning/sir-ping-a-lot">
   <img alt="repo size" src="https://img.shields.io/github/repo-size/1995parham-learning/sir-ping-a-lot">
 </p>
@@ -33,3 +33,7 @@ The system is split into small services that talk over [NATS](https://nats.io):
 ## Credits
 
 Originally built by [Elaheh Dastan](https://github.com/elaheh-dastan), with mentoring from [Parham Alvani](https://github.com/1995parham). Consolidated here for learning purposes.
+
+## License
+
+Licensed under the [GNU General Public License v3.0](LICENSE).
