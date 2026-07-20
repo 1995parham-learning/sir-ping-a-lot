@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 	"log"
+	"server/balancer"
 	"server/config"
 	"server/model"
 	"server/store"
@@ -14,12 +15,12 @@ import (
 type Server struct {
 	URL           store.URL
 	Duration      int
-	NatsConn      *nats.EncodedConn
+	NatsConn      *nats.Conn
 	NatsCfg       config.Nats
 	TimeThreshold int
 }
 
-func New(u store.URL, d int, conn *nats.EncodedConn, cfg config.Nats, th int) Server {
+func New(u store.URL, d int, conn *nats.Conn, cfg config.Nats, th int) Server {
 	return Server{
 		URL:           u,
 		Duration:      d,
@@ -61,8 +62,12 @@ func (s *Server) Run() {
 }
 
 func (s *Server) Publish(u model.URL) {
-	err := s.NatsConn.Publish(s.NatsCfg.Topic, u)
+	data, err := balancer.Encode(u)
 	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err := s.NatsConn.Publish(s.NatsCfg.Topic, data); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -71,8 +76,13 @@ func (s *Server) Publish(u model.URL) {
 func (s *Server) Subscribe() model.URL {
 	ch := make(chan model.URL)
 
-	if _, err := s.NatsConn.QueueSubscribe(s.NatsCfg.Topic, "test", func(s model.URL) {
-		ch <- s
+	if _, err := s.NatsConn.QueueSubscribe(s.NatsCfg.Topic, "test", func(msg *nats.Msg) {
+		var u model.URL
+		if err := balancer.Decode(msg.Data, &u); err != nil {
+			log.Fatal(err)
+		}
+
+		ch <- u
 	}); err != nil {
 		log.Fatal(err)
 	}

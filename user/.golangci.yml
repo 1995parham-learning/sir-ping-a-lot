@@ -1,11 +1,36 @@
----
+version: "2"
 linters:
-  enable-all: true
+  default: all
   disable:
-    # it should improve to support more known patterns
+    # opinionated / low-signal on this codebase
     - varnamelen
-    # deprecated linters
-    - maligned
-    - scopelint
-    - golint
-    - interfacer
+    # requires an allow/deny list to mean anything; pure noise without config
+    - depguard
+    # too strict for these small models and request structs
+    - exhaustruct
+    # stylistic: inline `if err := f(); err != nil` is idiomatic here
+    - noinlineerr
+    - nonamedreturns
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  enable:
+    - gci
+    - gofmt
+    - gofumpt
+    - goimports
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$

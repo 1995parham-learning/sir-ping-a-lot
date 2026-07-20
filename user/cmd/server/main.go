@@ -9,11 +9,10 @@ import (
 )
 
 func Register(root *cobra.Command) {
-	// nolint: exhaustivestruct
 	c := cobra.Command{
 		Use:   "server",
 		Short: "Runs endpoints",
-		Run: func(cmd *cobra.Command, args []string) {
+		Run: func(_ *cobra.Command, _ []string) {
 			cfg := config.Read()
 			d := db.New(cfg.Database)
 

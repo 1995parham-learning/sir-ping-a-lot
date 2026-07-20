@@ -6,6 +6,7 @@ import (
 	"github.com/httpmon/user/authentication"
 	"github.com/httpmon/user/config"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestAuthentication(t *testing.T) {
@@ -15,7 +16,7 @@ func TestAuthentication(t *testing.T) {
 	id := 1
 
 	token, err := authentication.CreateToken(id, cfg.JWT)
-	assert.Nil(t, err)
+	require.NoError(t, err)
 
 	b, d := authentication.ValidateToken(token, cfg.JWT)
 	assert.True(t, b)

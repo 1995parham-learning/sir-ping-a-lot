@@ -47,7 +47,7 @@ func (a API) Register(c *echo.Context) error {
 		c.JSON(http.StatusConflict, err.Error())
 	}
 
-	// nolint: wrapcheck
+	//nolint: wrapcheck
 	return c.JSON(http.StatusCreated, user)
 }
 
@@ -72,7 +72,7 @@ func (a API) Login(c *echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	// nolint: wrapcheck
+	//nolint: wrapcheck
 	return c.JSON(http.StatusOK, token)
 }
 
@@ -105,6 +105,6 @@ func (a API) Add(c *echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	// nolint: wrapcheck
+	//nolint: wrapcheck
 	return c.JSON(http.StatusCreated, u)
 }

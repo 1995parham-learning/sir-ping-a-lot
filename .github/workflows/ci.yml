@@ -16,8 +16,8 @@ jobs:
     outputs:
       services: ${{ steps.filter.outputs.changes }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: dorny/paths-filter@v3
+      - uses: actions/checkout@v7
+      - uses: dorny/paths-filter@v4
         id: filter
         with:
           filters: |
@@ -50,9 +50,9 @@ jobs:
       MONITOR_NATS_HOST: "nats://localhost:4222"
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v7
         with:
           # Use each module's own Go version from its go.mod.
           go-version-file: ${{ matrix.service }}/go.mod
@@ -65,7 +65,7 @@ jobs:
         run: go test -v ./... -covermode=atomic -coverprofile=coverage.out
 
       - name: upload coverage
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v7
         with:
           files: ${{ matrix.service }}/coverage.out
           flags: ${{ matrix.service }}
@@ -82,12 +82,12 @@ jobs:
       matrix:
         service: ${{ fromJSON(needs.changes.outputs.services) }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
         with:
           go-version-file: ${{ matrix.service }}/go.mod
           cache: false
-      - uses: golangci/golangci-lint-action@v6
+      - uses: golangci/golangci-lint-action@v9
         with:
           version: latest
           working-directory: ${{ matrix.service }}

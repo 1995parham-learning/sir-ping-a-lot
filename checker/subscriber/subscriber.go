@@ -1,6 +1,7 @@
 package subscriber
 
 import (
+	"checker/balancer"
 	"checker/config"
 	"checker/model"
 	"context"
@@ -13,11 +14,11 @@ import (
 )
 
 type Checker struct {
-	Nats    *nats.EncodedConn
+	Nats    *nats.Conn
 	NatsCfg config.Nats
 }
 
-func New(nc *nats.EncodedConn, natsCfg config.Nats) Checker {
+func New(nc *nats.Conn, natsCfg config.Nats) Checker {
 	return Checker{
 		Nats:    nc,
 		NatsCfg: natsCfg,
@@ -27,8 +28,13 @@ func New(nc *nats.EncodedConn, natsCfg config.Nats) Checker {
 func (c *Checker) Subscribe() {
 	ch := make(chan model.URL)
 
-	if _, err := c.Nats.QueueSubscribe(c.NatsCfg.Topic, c.NatsCfg.Queue, func(s model.URL) {
-		ch <- s
+	if _, err := c.Nats.QueueSubscribe(c.NatsCfg.Topic, c.NatsCfg.Queue, func(msg *nats.Msg) {
+		var u model.URL
+		if err := balancer.Decode(msg.Data, &u); err != nil {
+			log.Fatal(err)
+		}
+
+		ch <- u
 	}); err != nil {
 		log.Fatal(err)
 	}
@@ -77,8 +83,12 @@ func fetch(u model.URL) (*http.Response, error) {
 }
 
 func (c *Checker) Publish(s model.Status) {
-	err := c.Nats.Publish("save", s)
+	data, err := balancer.Encode(s)
 	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err := c.Nats.Publish("save", data); err != nil {
 		log.Fatal(err)
 	}
 
@@ -88,8 +98,12 @@ func (c *Checker) Publish(s model.Status) {
 
 // Only used for testing.
 func (c *Checker) PublishURL(u model.URL) {
-	err := c.Nats.Publish(c.NatsCfg.Topic, u)
+	data, err := balancer.Encode(u)
 	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err := c.Nats.Publish(c.NatsCfg.Topic, data); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -98,7 +112,12 @@ func (c *Checker) PublishURL(u model.URL) {
 func (c *Checker) SubscribeStatus(st *model.Status) {
 	ch := make(chan model.Status)
 
-	if _, err := c.Nats.QueueSubscribe("save", "test", func(s model.Status) {
+	if _, err := c.Nats.QueueSubscribe("save", "test", func(msg *nats.Msg) {
+		var s model.Status
+		if err := balancer.Decode(msg.Data, &s); err != nil {
+			log.Fatal(err)
+		}
+
 		ch <- s
 	}); err != nil {
 		log.Fatal(err)

@@ -9,7 +9,7 @@ import (
 )
 
 func New(config config.Database) *gorm.DB {
-	// nolint: exhaustivestruct
+	//nolint: exhaustivestruct
 	db, err := gorm.Open(postgres.Open(config.Cstring()), &gorm.Config{})
 	if err != nil {
 		log.Printf("can not open connection to database due to the following err\n: %s", err)

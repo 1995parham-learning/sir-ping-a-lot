@@ -26,14 +26,14 @@ func CreateToken(id int, cfg config.JWT) (string, error) {
 func ValidateToken(token string, cfg config.JWT) (in bool, i int) {
 	claims := jwt.MapClaims{}
 
-	_, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
+	_, err := jwt.ParseWithClaims(token, claims, func(_ *jwt.Token) (any, error) {
 		return []byte(cfg.Secret), nil
 	})
 	if err != nil {
 		return false, 0
 	}
 
-	// nolint: varnamelen
+	//nolint: varnamelen
 	auth, ok := claims["authorized"].(bool)
 	if !ok {
 		return false, 0

@@ -14,7 +14,7 @@ import (
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	// rootCmd represents the base command when called without any subcommands
-	// nolint: exhaustivestruct
+	//nolint: exhaustivestruct
 	rootCmd := &cobra.Command{
 		Use:   "github.com/httpmon/user",
 		Short: "A brief description of your application",

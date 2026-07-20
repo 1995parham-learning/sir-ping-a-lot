@@ -7,16 +7,11 @@ import (
 	"github.com/nats-io/nats.go"
 )
 
-func New(n config.Nats) *nats.EncodedConn {
+func New(n config.Nats) *nats.Conn {
 	nc, err := nats.Connect(n.Host)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	c, err := nats.NewEncodedConn(nc, nats.GOB_ENCODER)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return c
+	return nc
 }

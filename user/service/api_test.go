@@ -1,8 +1,9 @@
 package service_test
 
 import (
+	"context"
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -14,6 +15,7 @@ import (
 	"github.com/httpmon/user/service"
 	"github.com/labstack/echo/v5"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestRegisterEmailEmpty(t *testing.T) {
@@ -32,7 +34,9 @@ func TestRegisterEmailEmpty(t *testing.T) {
 
 	registerationJSON := `{"Password":"1378"}`
 
-	req := httptest.NewRequest(http.MethodPost, "/register", strings.NewReader(registerationJSON))
+	req := httptest.NewRequestWithContext(
+		context.Background(), http.MethodPost, "/register", strings.NewReader(registerationJSON),
+	)
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 
 	rec := httptest.NewRecorder()
@@ -40,9 +44,10 @@ func TestRegisterEmailEmpty(t *testing.T) {
 
 	resp := rec.Result()
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
 
-	assert.Nil(t, err, "Cannot read body")
+	body, err := io.ReadAll(resp.Body)
+
+	require.NoError(t, err, "Cannot read body")
 
 	assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
 
@@ -58,7 +63,9 @@ func Register(t *testing.T, api service.API) {
 	registerationJSON := `{"Email":"raha.alvani@gmail.com",
 							"Password":"1378"}`
 
-	req := httptest.NewRequest(http.MethodPost, "/register", strings.NewReader(registerationJSON))
+	req := httptest.NewRequestWithContext(
+		context.Background(), http.MethodPost, "/register", strings.NewReader(registerationJSON),
+	)
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 
 	rec := httptest.NewRecorder()
@@ -66,9 +73,10 @@ func Register(t *testing.T, api service.API) {
 
 	resp := rec.Result()
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
 
-	assert.Nil(t, err, "Cannot read body")
+	body, err := io.ReadAll(resp.Body)
+
+	require.NoError(t, err, "Cannot read body")
 
 	assert.Equal(t, http.StatusCreated, resp.StatusCode)
 
@@ -84,18 +92,18 @@ func Login(t *testing.T, api service.API) string {
 	loginJSON := `{"Email":"raha.alvani@gmail.com",
 							"Password":"1378"}`
 
-	req := httptest.NewRequest(http.MethodPost, "/login", strings.NewReader(loginJSON))
+	req := httptest.NewRequestWithContext(context.Background(), http.MethodPost, "/login", strings.NewReader(loginJSON))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 
 	rec := httptest.NewRecorder()
 	e.ServeHTTP(rec, req)
 
-	//nolint: bodyclose
 	resp := rec.Result()
 	defer checkClose(resp)
-	body, err := ioutil.ReadAll(resp.Body)
 
-	assert.Nil(t, err, "Cannot read body")
+	body, err := io.ReadAll(resp.Body)
+
+	require.NoError(t, err, "Cannot read body")
 
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 
@@ -118,19 +126,19 @@ func Add(t *testing.T, token string, api service.API) {
 
 	addJSON := `{"URL": "https://www.google.com", "Period": 2}`
 
-	req := httptest.NewRequest(http.MethodPost, "/url", strings.NewReader(addJSON))
+	req := httptest.NewRequestWithContext(context.Background(), http.MethodPost, "/url", strings.NewReader(addJSON))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	req.Header.Set("Authorization", token)
 
 	rec := httptest.NewRecorder()
 	e.ServeHTTP(rec, req)
 
-	//nolint: bodyclose
 	resp := rec.Result()
 	defer checkClose(resp)
-	body, err := ioutil.ReadAll(resp.Body)
 
-	assert.Nil(t, err, "Cannot read body")
+	body, err := io.ReadAll(resp.Body)
+
+	require.NoError(t, err, "Cannot read body")
 
 	assert.Equal(t, http.StatusCreated, resp.StatusCode)
 
