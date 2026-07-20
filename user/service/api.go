@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"log"
 	"net/http"
 	"net/url"
 
@@ -10,7 +11,7 @@ import (
 	"github.com/httpmon/user/model"
 	"github.com/httpmon/user/request"
 	"github.com/httpmon/user/store"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 )
 
 var ErrLoggedOut = errors.New("you are not logged in")
@@ -27,10 +28,10 @@ func (a API) Run() {
 	e.POST("/register", a.Register)
 	e.POST("/login", a.Login)
 	e.POST("/url", a.Add)
-	e.Logger.Fatal(e.Start(":8080"))
+	log.Fatal(e.Start(":8080"))
 }
 
-func (a API) Register(c echo.Context) error {
+func (a API) Register(c *echo.Context) error {
 	var user model.User
 
 	if err := c.Bind(&user); err != nil {
@@ -50,7 +51,7 @@ func (a API) Register(c echo.Context) error {
 	return c.JSON(http.StatusCreated, user)
 }
 
-func (a API) Login(c echo.Context) error {
+func (a API) Login(c *echo.Context) error {
 	var user model.User
 
 	if err := c.Bind(&user); err != nil {
@@ -75,7 +76,7 @@ func (a API) Login(c echo.Context) error {
 	return c.JSON(http.StatusOK, token)
 }
 
-func (a API) Add(c echo.Context) error {
+func (a API) Add(c *echo.Context) error {
 	var newURL request.URL
 
 	token := c.Request().Header.Get("Authorization")

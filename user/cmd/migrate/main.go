@@ -1,41 +1,25 @@
 package migrate
 
 import (
-	"database/sql"
-	"errors"
 	"log"
 
-	"github.com/golang-migrate/migrate/v4"
-	"github.com/golang-migrate/migrate/v4/database/postgres"
-
-	// import for side effects.
-	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/httpmon/user/config"
+	"github.com/httpmon/user/db"
+	"github.com/httpmon/user/model"
 	"github.com/spf13/cobra"
 )
 
+// Register wires the "migrate" sub-command, which creates the database tables
+// from the GORM models if they don't already exist.
 func Register(root *cobra.Command, cfg config.Database) {
 	// nolint: exhaustivestruct
 	c := cobra.Command{
 		Use:   "migrate",
-		Short: "Manages database, creates and fills tables if don't exist",
+		Short: "Manages database, creates tables if they don't exist",
 		Run: func(cmd *cobra.Command, args []string) {
-			database, err := sql.Open("postgres", cfg.Cstring())
-			if err != nil {
-				log.Fatal(err)
-			}
+			conn := db.New(cfg)
 
-			driver, err := postgres.WithInstance(database, &postgres.Config{})
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			p, err := migrate.NewWithDatabaseInstance("file://./migration", "monitor", driver)
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			if err := p.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
+			if err := conn.AutoMigrate(&model.User{}, &model.URL{}); err != nil {
 				log.Fatal(err)
 			}
 		},

@@ -12,7 +12,7 @@ import (
 	"github.com/httpmon/user/config"
 	"github.com/httpmon/user/mock"
 	"github.com/httpmon/user/service"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/stretchr/testify/assert"
 )
 

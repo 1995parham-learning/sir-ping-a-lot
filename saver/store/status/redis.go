@@ -1,12 +1,13 @@
 package status
 
 import (
+	"context"
 	"log"
 	"saver/model"
 	"strconv"
 	"time"
 
-	"github.com/gomodule/redigo/redis"
+	"github.com/redis/go-redis/v9"
 )
 
 type Memory interface {
@@ -15,7 +16,7 @@ type Memory interface {
 }
 
 type RedisStatus struct {
-	Redis   redis.Conn
+	Redis   *redis.Client
 	Counter int
 }
 
@@ -25,15 +26,18 @@ type redisStatus struct {
 	StatusCode int    `redis:"status"`
 }
 
-//nolint: gofumpt
-func NewRedisStatus(r redis.Conn) RedisStatus {
-	return RedisStatus{Redis: r,
-		Counter: 0}
+func NewRedisStatus(r *redis.Client) RedisStatus {
+	return RedisStatus{Redis: r, Counter: 0}
 }
 
 func (s *RedisStatus) Insert(status model.Status) {
-	_, err := s.Redis.Do("HMSET", "status:"+strconv.Itoa(s.Counter), "url", status.URLID, "clock",
-		status.Clock.Format(time.RFC3339), "status", status.StatusCode)
+	ctx := context.Background()
+
+	err := s.Redis.HSet(ctx, "status:"+strconv.Itoa(s.Counter),
+		"url", status.URLID,
+		"clock", status.Clock.Format(time.RFC3339),
+		"status", status.StatusCode,
+	).Err()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -42,31 +46,28 @@ func (s *RedisStatus) Insert(status model.Status) {
 }
 
 func (s *RedisStatus) Flush() []model.Status {
+	ctx := context.Background()
 	models := make([]model.Status, s.Counter)
 
 	for i := 0; i < s.Counter; i++ {
-		values, err := redis.Values(s.Redis.Do("HGETALL", "status:"+strconv.Itoa(i)))
-		if err != nil {
-			log.Fatal(err)
-		}
+		key := "status:" + strconv.Itoa(i)
 
 		var status redisStatus
-
-		if err := redis.ScanStruct(values, &status); err != nil {
+		if err := s.Redis.HGetAll(ctx, key).Scan(&status); err != nil {
 			log.Fatal(err)
 		}
 
 		models[i].URLID = status.URLID
-		models[i].Clock, err = time.Parse(time.RFC3339, status.Clock)
 
+		clock, err := time.Parse(time.RFC3339, status.Clock)
 		if err != nil {
 			log.Fatal(err)
 		}
 
+		models[i].Clock = clock
 		models[i].StatusCode = status.StatusCode
 
-		_, err = s.Redis.Do("DEL", "status:"+strconv.Itoa(i))
-		if err != nil {
+		if err := s.Redis.Del(ctx, key).Err(); err != nil {
 			log.Fatal(err)
 		}
 	}

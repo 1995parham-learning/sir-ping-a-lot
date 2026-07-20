@@ -8,7 +8,7 @@ import (
 	"server/store"
 	"time"
 
-	"github.com/nats-io/go-nats"
+	"github.com/nats-io/nats.go"
 )
 
 type Server struct {

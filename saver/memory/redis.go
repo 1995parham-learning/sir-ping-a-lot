@@ -1,17 +1,21 @@
 package memory
 
 import (
+	"context"
 	"log"
 	"saver/config"
 
-	"github.com/gomodule/redigo/redis"
+	"github.com/redis/go-redis/v9"
 )
 
-func New(config config.Redis) redis.Conn {
-	conn, err := redis.Dial("tcp", config.Host+":"+config.Port)
-	if err != nil {
+func New(config config.Redis) *redis.Client {
+	client := redis.NewClient(&redis.Options{
+		Addr: config.Host + ":" + config.Port,
+	})
+
+	if err := client.Ping(context.Background()).Err(); err != nil {
 		log.Fatal(err)
 	}
 
-	return conn
+	return client
 }

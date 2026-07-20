@@ -1,38 +1,51 @@
 package migrate
 
 import (
-	"database/sql"
-	"errors"
 	"log"
 	"saver/config"
+	"saver/db"
+	"saver/model"
 
-	"github.com/golang-migrate/migrate/v4"
-	"github.com/golang-migrate/migrate/v4/database/postgres"
-	_ "github.com/golang-migrate/migrate/v4/source/file" // Imported for its side effects
 	"github.com/spf13/cobra"
 )
 
+// expiryTrigger keeps the statuses table small by deleting rows older than two
+// days after every insert. GORM's AutoMigrate can't express triggers, so we run
+// this alongside it with a plain Exec.
+const expiryTrigger = `
+CREATE OR REPLACE FUNCTION delete_expired_row()
+RETURNS TRIGGER AS
+	$BODY$
+		BEGIN
+		DELETE FROM statuses WHERE clock < NOW() - INTERVAL '2 days';
+		RETURN NULL;
+		END;
+	$BODY$
+	LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS delete_expired_rows ON statuses;
+
+CREATE TRIGGER delete_expired_rows
+	AFTER INSERT ON statuses
+	FOR EACH ROW
+	EXECUTE PROCEDURE delete_expired_row();
+`
+
+// Register wires the "migrate" sub-command, which creates the database tables
+// from the GORM models and installs the status-expiry trigger.
 func Register(root *cobra.Command, cfg config.Database) {
+	// nolint: exhaustivestruct
 	c := cobra.Command{
 		Use:   "migrate",
-		Short: "Manages database, creates and fills tables if don't exist",
+		Short: "Manages database, creates tables if they don't exist",
 		Run: func(cmd *cobra.Command, args []string) {
-			db, err := sql.Open("postgres", cfg.Cstring())
-			if err != nil {
+			conn := db.New(cfg)
+
+			if err := conn.AutoMigrate(&model.User{}, &model.URL{}, &model.Status{}); err != nil {
 				log.Fatal(err)
 			}
 
-			driver, err := postgres.WithInstance(db, &postgres.Config{})
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			p, err := migrate.NewWithDatabaseInstance("file://./migration", "monitor", driver)
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			if err := p.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
+			if err := conn.Exec(expiryTrigger).Error; err != nil {
 				log.Fatal(err)
 			}
 		},

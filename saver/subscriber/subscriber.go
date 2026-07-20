@@ -7,7 +7,7 @@ import (
 	"saver/model"
 	"saver/store/status"
 
-	"github.com/nats-io/go-nats"
+	"github.com/nats-io/nats.go"
 )
 
 type Subscriber struct {

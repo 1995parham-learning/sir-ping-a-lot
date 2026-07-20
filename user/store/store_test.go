@@ -3,7 +3,6 @@ package store_test
 import (
 	"testing"
 
-	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/httpmon/user/config"
 	"github.com/httpmon/user/db"
 	"github.com/httpmon/user/model"

@@ -4,7 +4,7 @@ import (
 	"log"
 	"saver/config"
 
-	"github.com/nats-io/go-nats"
+	"github.com/nats-io/nats.go"
 )
 
 func New(n config.Nats) *nats.EncodedConn {
