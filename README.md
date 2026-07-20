@@ -1,5 +1,13 @@
 # sir-ping-a-lot 🎺
 
+<p align="center">
+  <a href="https://github.com/1995parham-learning/sir-ping-a-lot/actions/workflows/ci.yml"><img alt="ci" src="https://github.com/1995parham-learning/sir-ping-a-lot/actions/workflows/ci.yml/badge.svg"></a>
+  <img alt="go version" src="https://img.shields.io/badge/go-1.26-00ADD8?logo=go&logoColor=white">
+  <img alt="license" src="https://img.shields.io/badge/license-GPL--3.0%20%26%20Apache--2.0-blue">
+  <img alt="last commit" src="https://img.shields.io/github/last-commit/1995parham-learning/sir-ping-a-lot">
+  <img alt="repo size" src="https://img.shields.io/github/repo-size/1995parham-learning/sir-ping-a-lot">
+</p>
+
 > *"I like big checks and I cannot lie."*
 
 A microservice-based **HTTP monitoring system**. You hand it URLs, and a small fleet of Go services keeps knighting around asking your endpoints the only question that matters: **are you still alive?**

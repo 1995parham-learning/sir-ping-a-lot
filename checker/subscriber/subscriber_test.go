@@ -26,6 +26,10 @@ func TestChecker_Subscribe(t *testing.T) {
 
 	go s.SubscribeStatus(&st)
 
+	// Let both NATS subscriptions register before publishing; NATS core has no
+	// replay, so a message sent before the subscription exists is lost.
+	time.Sleep(500 * time.Millisecond)
+
 	s.PublishURL(model.URL{
 		ID:       0,
 		UserID:   0,
@@ -34,7 +38,8 @@ func TestChecker_Subscribe(t *testing.T) {
 		Statuses: nil,
 	})
 
-	time.Sleep(time.Second)
+	// Allow the URL fetch (1s timeout) plus the status round-trip to complete.
+	time.Sleep(3 * time.Second)
 
 	assert.Equal(t, st.StatusCode, 200)
 }

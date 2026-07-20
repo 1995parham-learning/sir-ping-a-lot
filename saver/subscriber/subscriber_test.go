@@ -23,6 +23,10 @@ func TestSubscriber_Subscribe(t *testing.T) {
 
 	go s.Subscribe()
 
+	// Let the NATS subscription register before publishing; NATS core has no
+	// replay, so a message sent before the subscription exists is lost.
+	time.Sleep(500 * time.Millisecond)
+
 	st := model.Status{
 		ID:         1,
 		URLID:      1,
